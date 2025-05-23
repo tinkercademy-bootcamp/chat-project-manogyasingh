@@ -17,7 +17,7 @@ int main() {
   // Creating socket file descriptor
   int my_sock = socket(AF_INET, SOCK_STREAM, 0);
   if (my_sock < 0) {
-    std::cerr << "Socket creation erron\n";
+    std::cerr << "Socket creation error\n";
     return -1;
   }
   address.sin_family = AF_INET;
