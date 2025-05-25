@@ -54,9 +54,9 @@
 - Create a Makefile that will speed up the process.
   - Done!
 - [Quickstart tutorial to make](https://makefiletutorial.com/) - Learn make fundamentals with practical examples and common patterns.
-  - Read enough to move forward, will read more later // TODO  
+  - Done!
 - How else can you learn about make?
-  - so ther resource above is pretty useful. the gnu docs are also good for reference: https://www.gnu.org/software/make/manual/
+  - so the resource above is pretty useful. the GNU docs are also good for reference: https://www.gnu.org/software/make/manual/
 - How can you tell if the resource you are using is correct?
   - reddit is usually a good place to find out if a resource is legit
 - Create a makefile such that when you run `make` with no arguments, it will:
@@ -66,19 +66,43 @@
     - specify `requirements`
   - Change your Makefile such that `make clean` will remove `build/` and all its contents.
     - Done!
-- What are the most important command line arguments to learn for make? // TODO
-- What are the most important directives to learn about in Makefile? // TODO
-- What are the most important commands to implement in your Makefile? // TODO
-- Which ones are essential, which ones are nice to haves? // TODO
+- What are the most important command line arguments to learn for make?
+```
+target						specifies what to build
+-f       					choose custom file as makefile
+-n or --just-print			just print the commands instead of actually executing
+-s or --silent				no prints
+-q or --question							check whether target is upto date
+-i or --ignore-errors		ignore all errors in the command
+```
+- What are the most important directives to learn about in Makefile?
+```
+include <file> tells make to read another makefile before continuing
+.PHONY	tells make to not treat the target as a file, useful for, for example, clean or other commands which should be executed everytime they're called instead of first checking if a certain file exists
+feq, ifneq, ifdef, ifndef, else, endif are similar to C++'s preprocessor directives
+```
+- What are the most important commands to implement in your Makefile?
+```
+all, compile everything
+component specific compile commands
+clean, remove all built files
+install, which will copy the compiled result to something like /bin/ 
+test, it's funcntion varies
+```
+- Which ones are essential, which ones are nice to haves?
+```
+all, clean, component wise compile are essential
+install and test are nice to have
+```
 
 ## Learn Basics of Git
 
 - Read through the code in `src/`
     - Done!
 - Answer any `#Questions` as a comment
-    - TODO
+    - Done!
 - Commit and push your changes to git
-    - TODO
+    - Done!
 - Each commit should be responding to a single task or question
 - Why is it important to keep your commit to a single task or question?
   - its like the single responsibility principle applied to git. makes it easier to understand what each commit is about and also to trace faults later
@@ -142,16 +166,17 @@ user@ip-172-31-25-35:~/chat-project-manogyasingh/exercise-1/src$ g++ tcp_echo_se
 
 ## Improving Interactions with LLMs
 
-- What is the most authoritative source of information about `socket()`
-  from `<sys/socket.h>`?
-- What is the most authoritative source of information about the TCP and IP
-  protocols?
+- What is the most authoritative source of information about `socket()` from `<sys/socket.h>`?
+   - The POSIX Standard
+- What is the most authoritative source of information about the TCP and IP protocols?
+  - The Request for Comments Editor (RFC) of Internet Engineering Task Force (IETF)
 - What is the most authoritative source of information about the C++
   programming language?
-- What information can you find about using Markdown when structuring prompts 
-  to LLMs?
+   - The International Organization for Standardization (ISO)
+- What information can you find about using Markdown when structuring prompts to LLMs?
+   - LLM training data contains a lot of markdown and so they've learned to use it effectively. One can mark section headings and subheadings with # or ## and put code or literals in backticks to strcutre the prompt better. can also try bolding emphatic parts with `**` 
 
 - What is the difference between LLM and AI?
-AI refers to all forms of systems to have computer make decisions (or content)
+  - AI refers to all forms of systems to have computer make decisions (or content) but LLM is a primarily text based generative AI model tuned to converse in natural language.
 - Is it grammatically correct in English to say "a LLM" or "an LLM"? Why?
-"an" LLM because it starts with an "el" sound
+  - "an" LLM because it starts with an "el" sound
