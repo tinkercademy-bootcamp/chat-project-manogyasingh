@@ -128,9 +128,11 @@ git rebase                          // apply your commits to the newer version o
 
 - Read the code in `src/tcp-echo-client.cc` and add a way to change the 
   message sent using command line arguments
+  - Done!
 - **Example**: `./client "hello message from the command prompt"` should send
   `"hello message from the command prompt"` to the server
 - Commit your changes into git
+  - Done!
 - What do all these headers do?
 ```
 #include <arpa/inet.h>      allows inet_pton and inet_ntop to convert string to/from network address
@@ -155,8 +157,10 @@ git rebase                          // apply your commits to the newer version o
 ## Introduction to Memory Management
 - What is happening in line 26 of `tcp-echo-client.cc`? 
   `if (inet_pton(AF_INET, kServerAddress.c_str(), &address.sin_addr) <= 0) {`
+   - pton (presentation to numeric) function is converting the ip address of the server to a numeric format. if it fails and returns -1, we can trigger an exit
 - What is happening in line 31 of `tcp-echo-client.cc`?
   `if (connect(my_sock, (sockaddr *)&address, sizeof(address)) < 0) {`
+  - connects to the server using sys/socket. if it fails  it returns -1
 - What is the difference between a pointer and a reference?
 
 |Pointer|Reference|
@@ -170,11 +174,20 @@ git rebase                          // apply your commits to the newer version o
 
 
 - When is it better to use a pointer?
+  - when you need to access the memory directly, eg, to iterate. or when you need to reassign it later. also when the target is allowed to be null.
 - When is it better to use a reference?
+  - when you want to alias something to pass in functions for it to be able to control it.
 - What is the difference between `std::string` and a C-style string?
+  - `std::string` is a class and the `std::string` objects have dynamic sizes and automatic bound checking.
+  - C-style string is a null terminated array of characters.
 - What type is a C-style string?
+  - `char[]`
 - What happens when you iterate a pointer?
+  - It moves to the next memory location. This usually isnt the next byte but rather jumps as many bytes as is the size of the object its pointing to.`address(p+k)=address(p)+k×sizeof(T)`
 - What are the most important safety tips to know when using pointers?
+  - Always initialise a pointer right when declaring otherwise it can point to random locations (dangling behavious) and lead to unpredictable behaviour.
+  - never dereference `nullptr`. implement checks if the code allows `nullptr` to reach locations where it may be dereferenced.
+  - Don't iterate beyond bounds.
 
 ## Learn Basics of Creating a C++ Project in Your IDE
 
