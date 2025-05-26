@@ -49,7 +49,7 @@
 ```
 - What other kinds of build types are useful?
 
-## Learn Basics of Make                          // TODO
+## Learn Basics of Make
 
 - Create a Makefile that will speed up the process.
   - Done!
