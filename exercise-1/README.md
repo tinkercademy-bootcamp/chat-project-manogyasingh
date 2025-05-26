@@ -124,8 +124,6 @@ git pull                            // apply changes on the remote branch to you
 git rebase                          // apply your commits to the newer version of the repo
 ```
 
-/// EVERYTHING BELOW THIS IS A TODO
-
 ## Introduction to Sockets
 
 - Read the code in `src/tcp-echo-client.cc` and add a way to change the 
@@ -134,20 +132,43 @@ git rebase                          // apply your commits to the newer version o
   `"hello message from the command prompt"` to the server
 - Commit your changes into git
 - What do all these headers do?
+```
+#include <arpa/inet.h>      allows inet_pton and inet_ntop to convert string to/from network address
+#include <iostream>         brings stdin stdout stderr etc
+#include <netinet/in.h> brings sockaddr_in
+#include <string> for std::string
+#include <sys/socket.h> bind, socket, connect
+#include <sys/types.h> datatype
+#include <unistd.h> read/write/close syscalls
+```
 - How do you find out which part of the below code comes from which header?
+  - Ctrl+Click when using cpp-tools extension. I guess without something like that you'd have to run grep in all the included Header files
 - How do you change the code so that you are sending messages to servers
   other than localhost?
+   - Mention their IP address instead of `127.0.0.1`
 - How do you change the code to send to a IPv6 address instead of IPv4?
+  - Address family `AF_INET6` instead of the current `AF_INET`. Then we can also use `sockaddr_in6` and `sin6_addr`,`sin6_port` etc 
 - **Bonus**: How do you change the client code to connect by hostname instead
   of IP address?
+   - `getaddrinfo()` and `getnameinfo()` convert hostname to IP and IP to hostname respectively. We can use that to convert the hostname into an IP and then connect using that.
   
 ## Introduction to Memory Management
-
 - What is happening in line 26 of `tcp-echo-client.cc`? 
   `if (inet_pton(AF_INET, kServerAddress.c_str(), &address.sin_addr) <= 0) {`
 - What is happening in line 31 of `tcp-echo-client.cc`?
   `if (connect(my_sock, (sockaddr *)&address, sizeof(address)) < 0) {`
 - What is the difference between a pointer and a reference?
+
+|Pointer|Reference|
+|-|-|
+|Contains the memory address|Just an alias|
+|Declared with `*`| Declared with `&`|
+|Can be declared without initialisation|Must be initialised|
+|Allowed to be NULL or Nullptr|Must point to a valid object|
+|Pointer can be used like an int, eg, `ptr++`|Reference isn't like that|
+|Pointer to a Pointer is valid| Ref to a ref not valid|
+
+
 - When is it better to use a pointer?
 - When is it better to use a reference?
 - What is the difference between `std::string` and a C-style string?
