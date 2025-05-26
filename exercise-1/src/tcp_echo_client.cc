@@ -6,14 +6,21 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-int main() {
+int main(int argc, char **argv) {
   // #Question - are these the same type?
   /*
-  Answer: Nope! On the left we have a std::string from the STL. It has its own dynamic character string and provides stl functions for manipulation. On the right we have a string literal (char[N]) or cstring with 17 chars and a \0 null character for termination
+  Answer: Nope! On the left we have a std::string from the STL. It has its own
+  dynamic character string and provides stl functions for manipulation. On the
+  right we have a string literal (char[N]) or cstring with 17 chars and a \0
+  null character for termination
 
-  This statement won't produce an error because there's implicit conversion. The string literal decays into a pointer char* and then the constructor from std::string takes it as the input.
+  This statement won't produce an error because there's implicit conversion. The
+  string literal decays into a pointer char* and then the constructor from
+  std::string takes it as the input.
   */
   std::string message = "Hello from client";
+  if (argc != 1)
+    message = argv[1];
   const int kPort = 8080;
   const std::string kServerAddress = "127.0.0.1";
   sockaddr_in address;
