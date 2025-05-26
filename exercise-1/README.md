@@ -180,9 +180,22 @@ git rebase                          // apply your commits to the newer version o
 
 - How do you compile and run your project in your IDE?
   - From the terminal as usual:
-```
+
+```sh
 user@ip-172-31-25-35:~/chat-project-manogyasingh/exercise-1/src$ g++ tcp_echo_client.cc 
 user@ip-172-31-25-35:~/chat-project-manogyasingh/exercise-1/src$ g++ tcp_echo_server.cc
+# then chmod if needed and execute the binary
+```
+
+```sh
+# better approach with make
+user@ip-172-31-25-35:~/chat-project-manogyasingh/exercise-1$ make
+mkdir -p build
+g++ src/tcp_echo_server.cc -o build/server.o
+mkdir -p build
+g++ src/tcp_echo_client.cc -o build/client.o
+user@ip-172-31-25-35:~/chat-project-manogyasingh/exercise-1$ ./build/server.o 
+Server listening on port 8080
 ```
 
 ## Improving Interactions with LLMs
