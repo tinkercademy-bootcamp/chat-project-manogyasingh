@@ -8,10 +8,15 @@
 - https://man7.org/linux/man-pages/man2/socket.2.html - System call reference
   for creating communication endpoints
 - Or type `man socket` in terminal
+    - This seems to be the actual syscall with the description `int socket(int domain, int type, int protocol);`
+    - I actually tried to call this from the command line too but it turned out its an API **in the kernel** and not an installed component or tool
 - https://man7.org/linux/man-pages/man7/socket.7.html - Socket interface 
   overview and protocol families
 - Or type `man 7 socket` in terminal
+  - Had to install `mandb` and `manpages` but got it working
+  - This seems to be the interface for C++
 - When would you want to use a `SOCK_RAW` stream?
+  - Instead of interacting with an OSI level 4 interface, `SOCK_RAW` presents an interface directly for the lower level protocols like IP or ICMP. It can be used for implementing new protocols, raw inspection of internet data (like when sniffing with wireshark) 
 
 ### TCP and IP Protocols
 - [IPv4](https://www.rfc-editor.org/info/rfc791) - Internet Protocol 
