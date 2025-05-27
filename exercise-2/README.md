@@ -30,16 +30,38 @@
 - [C++23 ISO standard draft](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2023/n4950.pdf) - 
   Working draft of the C++ language specification
 - Is the above the official C++23 spec? 
+  - This is a working draft. It even says "Note: this is an early draft. It’s known to be incomplet and incorrekt, and it has lots of bad formatting." XD
+  - But its the final draft and is technically identical to the official version.
 - Where is the official C++23 spec?
+  - https://www.iso.org/standard/83626.html
 - Why was this link chosen instead?
+  - Official standards in ISO are paywalled to support the institute's administration costs
+  - The final draft given above is the closest document to it (in fact it's identical) that is free.
 - Is this a helpful reference for learning C++?
-- Can the various implementations of C++ compilers be different from the
-  C++ standard?
+  - Definitely a helpful resource but not for learning.
+  - It's too technical as unambiguity takes precedence over readability.
+  - It is however the best and most authoritative source on C++ standards 
+- Can the various implementations of C++ compilers be different from the C++ standard?
+  - None of them can differ from it in the sense that none can violate the established standard
+  - However, the spec can still leave gaps. Notably, it doesn't mention the "how" of implementations, just the "what"
+  - This means the actual implementations can differ from one another, while still agreeing the official standard
+   
 - What are the most widely used and most significant C++ compilers?
+  - GCC
+  - Clang
+  - MS Visual C++
+  - Intel C++
+  - MinGW-GCC
 - Where is the equivalent spec for C++26?
-
+  - It's in development. Here's the latest draft: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/n5008.pdf
+   And this how I know: https://isocpp.org/blog/category/standardization
 - Where do you find the spec for the HTTP protocol?
+  - RFC9110: https://www.rfc-editor.org/rfc/rfc9110.html
+  - RFC9110 through 9114 decribe HTTP's semantics, caching, version 1.1, 2 and 3 in detail.
 - What about HTTPS? Is there a spec for that protocol?
+  - HTTPS isn't a seperate protocol in itself but instead HTTP wrapped in Transport Layer Security (which does have a protocol spec).
+  - RFC8446 describes the latest TLS 1.3
+
 
 ## Introduction to C++ and Sockets Programming
 
