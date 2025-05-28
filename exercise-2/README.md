@@ -67,8 +67,12 @@
 
 - Read the code in `src/`
 - Are there any bugs in this code? 
+  - There was one in the read_args() question
+  - it was causing it to never run the base case for zero arguments but instead to exit.
 - What can you do to identify if there are bugs in the code?
-
+  - Test it on a lot of inputs including potential edge cases
+  - Get it "Audited" by someone else
+  - Read it again very very carfully and see if you find something
 ## Refactoring: Extract Function
 
 - What is different in this code compared to exercise-1?
