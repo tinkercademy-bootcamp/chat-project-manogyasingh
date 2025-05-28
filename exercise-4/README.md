@@ -24,7 +24,6 @@ fundamentals with practical examples and common patterns.
 
 ## Experiments in Performance
 
-- Is it better to have many small files spread across many directories, or
-  a few large files across fewer directories?
+- Is it better to have many small files spread across many directories, or a few large files across fewer directories?
 - Is there a difference in compilation time between the two?
 - How can you assess performance other than compilation speed?

@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "common_utils.h"
 
 template <typename T, typename S> void check_error(T test, S error_message) {
   if (test) {
