@@ -1,7 +1,7 @@
 # Exercise 5
 
 **Update this README with your answers to the questions below.**
-
+//dummy
 ## Comparing File Changes
 
 - What's an easy way to identify the changes in source code from one exercise
