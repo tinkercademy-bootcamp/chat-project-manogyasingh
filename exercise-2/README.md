@@ -101,8 +101,15 @@
 ## Thinking About Performance
 
 - Does writing code this way have any impact on performance?
+  - The extra functions called should in theory add some overhead
+  - But its negligible compared to the time of actually running the functions
 - What do we mean when we say performance?
+  - It refers to the complexities (in time and space) and also to the overhead of running it
+  - more accurately it refers to how many operations and how much memory are needed to run the program with input of various sizes
 - How do we measure performance in a program?
+  - timing the program is one option (time or std::chrono)
+  - however this may not tell the complete story due to things like hardware differences, and also it may not be accurate enough for what we need it to be
+  - we need to profile it with tools like `gprof` to understand *where* its spending it's time
 
 ## Play with Git
 
