@@ -76,9 +76,27 @@
 ## Refactoring: Extract Function
 
 - What is different in this code compared to exercise-1?
+  - The monolithic main() function has been broken down into smaller functions
+``` 
+    create_socket() - handles socket creation
+    set_binary_address() - converts IP address
+    create_address() - creates sockaddr_in 
+    connect_to_server() - handles connection
+    send_and_receive_message() - handles communication over the socket
+    read_args() - CLI argument parser
+```
+  - Server now accepts communications indefinitely
 - Is this code better or worse than exercise-1?
+  - It's better
+  - more readable, more maintainable
+  - easier to test individual components or trace a failure
 - What are the tradeoffs compared to exercise-1?
+  - we got above listed pros and below listed cons
+  - code got larger
+  - control flow is slightly harder to track with all the different functions
 - Are you able to spot any mistakes or inconsistencies in the changes?
+  - there was one in the read_args which I described in the previous section
+  - this version actually fixes a bug instead of creating more. the server response buffer wasn't cleaned for every message in the previous version. this one does it.
   
 ## Thinking About Performance
 
