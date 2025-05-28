@@ -120,8 +120,13 @@
 - Make sure to commit each change as small and self-contained commit
 - This will make it easier to revert your code if you need to
 - What is `git tag`? How is `git tag` different from `git branch`?
+  - you can tag specific versions of the project in the tree to be specific versions using git tag, eg, `git tag v204.2.31`
+  - it's different in the sense that a tag is just a marker, it's not a parallel branch of development which can be merged or worked on without affecting other branches
 - How can you use `git tag` and `git branch` to make programming easier and
   more fun?
+  - setup naming conventions for the different branches and versions.
+  - say for example the `x.y.0` names will be reserved for the main branch. `x.y.50+` will be for beta testing releases as experiments
+  - this will help keep the codebase organised and make it easier to track changes across branches and versions without confusion about what should be merged where and in what circumstances
 
 ## Learn Basics of Debugging in Your IDE
 
