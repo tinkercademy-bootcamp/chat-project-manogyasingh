@@ -146,4 +146,8 @@
 ### Memory Management and Debug Mode in Your IDE
 
 - How do you see the memory layout of a `std::string` from your IDE debug mode?
+  - Add a breakpoint at a place where the `std::string` object is in scope
+  - Add it to watch
+  - Expand the object in the panel, it will show the whole memory layout
 - How do you see the memory layout of a struct from your IDE debug mode?
+  - The same way. Tried it for `sockaddr_in address` and it worked
