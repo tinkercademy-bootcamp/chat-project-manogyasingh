@@ -14,7 +14,7 @@
   - Can be time consuming to make all functions compatible to it
 - Apply `check_error` to all the code in `src/`
   - Done!
-  - I did not apply it to `send_and_receive_messages()` in `tcp_echo_client.cc` and to `handle_accept()` in `tcp_echo_server.cc`. Rationale is given in the code
+  - I did not apply it to `send_and_receive_messages()` in `tcp_echo_client.cc` and to `handle_accept()` in `tcp_echo_server.cc`. Rationale is given in the code.
 
 ## Introduction to Compiler Explorer
 
@@ -22,9 +22,16 @@
   `create_socket()` in [Compiler Explorer](https://godbolt.org) - Interactive 
   tool for exploring how C++ code compiles to assembly
 - What is happening here?
+  - Found some interesting observations here
+  - originally, the modularised version seemed to be about 4 times longer
+  - i noticed much of the assembly was just std::string constructors, so i modified the function to use const char* (C_Style strings) and now its just twice as long
+  - of course, this is still not ideal and we see extra function calls causing performance overhead
 - Can you think of any different approaches to this problem?
+  - i think the substitution by `const char*` helped
+  - for an even better approach i think we can preprocessor directives to write this logic in every function at compile time. this would cause no such performance overhead of repeated calls because to the compiler it will be indistinguishable from the approach which does not use multiple functions. for us, it will still be modular in a sense as the code itself is not repeated.
 - How can you modify your Makefile to generate assembly code instead of
   compiled code?
+  - we can use `-S` flag for this
 - **Note**: You can save the generated assembly from Compiler Explorer
 - **Bonus**: Can you view assembly code using your IDE?
 - **Bonus**: How do you see the assembly when you step through each line in

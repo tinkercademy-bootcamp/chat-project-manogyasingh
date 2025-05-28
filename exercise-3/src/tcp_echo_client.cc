@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-void check_error(bool test, std::string error_message) {
+void check_error(bool test, const char* error_message) {
   if (test) {
     std::cerr << error_message << "\n";
     exit(EXIT_FAILURE);
@@ -64,7 +64,8 @@ void send_and_receive_message(int sock, const std::string &message) {
 
 std::string read_args(int argc, char *argv[]) {
   std::string message;
-  check_error(argc == 1, std::string("Usage: ") + argv[0] + " < message >\n");
+  std::string error_msg = std::string("Usage: ") + argv[0] + " < message >\n";
+  check_error(argc == 1, error_msg.c_str());
   message = argv[1];
   return message;
 }
