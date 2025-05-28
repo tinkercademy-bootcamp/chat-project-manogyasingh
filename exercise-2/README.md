@@ -131,9 +131,17 @@
 ## Learn Basics of Debugging in Your IDE
 
 - How do you enable debug mode in your IDE?
+  - F5 launches the run and debug panel.
+  - Had to configure launch.json and tasks.json but it seems too be working now
 - In debug mode, how do you add a watch?
+  - Go to watch panel and click on "+". It will ask for the expression to watch. Enter the variable name or expression, eg, `message` and it will be added to the watch list
 - In debug mode, how do you add a breakpoint?
+  - click on the left of the line number
 - In debug mode, how do you step through code?
+  - F5 - Continueruns normally till it hits the next breakpoint
+  - F10 - Step Over - skips the next line entirely and moves to the one after that. Notably it will skip the entire function if the next line has one starting there.
+  - F11 - Step Into - Move inside the current function or even the line.
+  - Shift F11 - Step Out - Get out of the current function
 
 ### Memory Management and Debug Mode in Your IDE
 
