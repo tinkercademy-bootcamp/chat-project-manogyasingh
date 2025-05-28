@@ -6,9 +6,24 @@
 
 - Move code that can be shared between `tcp_echo_server.cc` and 
   `tcp_echo_client.cc` to separate `.h` and `.cc` files
+  - Done!
 - How would you compile from the command line?
+  - use `-c` flag to make the .o file for utils
+  - use `-o` and include the built object to get the final executable
+  - overall,
+  ```
+  user@ip-172-31-25-35:~/chat-project-manogyasingh/exercise-4$ make
+mkdir -p build
+g++ -g -Wall -Wextra -fsanitize=address -O0 -c src/common_utils.cc -o build/common_utils.o
+g++ -g -Wall -Wextra -fsanitize=address -O0 src/tcp_echo_server.cpp build/common_utils.o -o build/server -fsanitize=address
+g++ -g -Wall -Wextra -fsanitize=address -O0 src/tcp_echo_client.cpp build/common_utils.o -o build/
+  ```
 - How would you compile using make?
+  - use `$^` to include all dependencies in the make commands
+  - add a target for the utils file
+  - make sure utils is a prereq of client and server
 - How would you compile using VS Code?
+  - TODO
 
 ### Compiling vs Linking
 
