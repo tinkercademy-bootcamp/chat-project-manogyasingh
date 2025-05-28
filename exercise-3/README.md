@@ -8,8 +8,13 @@
 - A new function `check_error()` has been created and `create_socket()` from 
   exercise-2 has been refactored to make use of it
 - What are the benefits of writing code in this way?
+  - Follows the DRY principle. This makes it more modular, compact, readable and maintainable.
 - Are there any costs to writing code like this?
+  - A very small (negligible) overhead from an additional function call in the stack
+  - Can be time consuming to make all functions compatible to it
 - Apply `check_error` to all the code in `src/`
+  - Done!
+  - I did not apply it to `send_and_receive_messages()` in `tcp_echo_client.cc` and to `handle_accept()` in `tcp_echo_server.cc`. Rationale is given in the code
 
 ## Introduction to Compiler Explorer
 

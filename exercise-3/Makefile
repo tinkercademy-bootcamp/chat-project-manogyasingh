@@ -2,11 +2,11 @@
 
 all: server client
 
-server: build/server.o
+server:
 	mkdir -p build
 	g++ -g src/tcp_echo_server.cc -o build/server.o
 
-client: build/client.o
+client:
 	mkdir -p build
 	g++ -g src/tcp_echo_client.cc -o build/client.o
 

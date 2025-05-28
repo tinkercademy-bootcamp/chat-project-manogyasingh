@@ -48,6 +48,9 @@ void send_and_receive_message(int sock, const std::string &message) {
   send(sock, message.c_str(), message.size(), 0);
   std::cout << "Sent: " << message << "\n";
 
+  // this can be refactored to use the check_error() function but I'm choosing not to do that
+  // this is because we want this function to just output to stderr and then gracefully close the socket
+  // instead of just exiting from execution
   // Receive response from the server
   ssize_t read_size = read(sock, buffer, kBufferSize);
   if (read_size > 0) {
@@ -60,14 +63,9 @@ void send_and_receive_message(int sock, const std::string &message) {
 }
 
 std::string read_args(int argc, char *argv[]) {
-  std::string message = "Hello from client";
-  if (argc == 1) {
-    std::cout << "Usage: " << argv[0] << " <message>\n";
-    exit(EXIT_FAILURE);
-  }
-  if (argc > 1) {
-    message = argv[1];
-  }
+  std::string message;
+  check_error(argc == 1, std::string("Usage: ") + argv[0] + " < message >\n");
+  message = argv[1];
   return message;
 }
 
