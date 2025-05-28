@@ -28,6 +28,7 @@ g++ -g -Wall -Wextra -fsanitize=address -O0 src/tcp_echo_client.cpp build/common
 ### Compiling vs Linking
 
 - What is the difference between compiling and linking in C++?
+
 - What is the difference between creating an executable and creating a 
   library?
 - How do you compile a library, and then use that library to compile an
@@ -40,5 +41,11 @@ fundamentals with practical examples and common patterns.
 ## Experiments in Performance
 
 - Is it better to have many small files spread across many directories, or a few large files across fewer directories?
+  - from a performance perspective, from what I learned in the last experiment, there will be an overhead from modularity. thus, few large files are better
+  - those can probably be fixed with some clever preprocessor directive tricks, and the overhead may not be that much compared to the number of operations in the actual execution. in this case one would prefer the readibility and maintainability of modularity
 - Is there a difference in compilation time between the two?
+  - With larger files the whole project seems to build faster.
+  - but in practice we usually only change a few components at a time, in this case smaller files will compile faster because make will only recompile those.
 - How can you assess performance other than compilation speed?
+  - bandwidth and space usage (memory and disk)
+  - execuition performance including time and space tests
