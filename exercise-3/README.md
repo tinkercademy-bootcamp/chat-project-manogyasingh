@@ -87,6 +87,7 @@
 
 - After your experiments with Compiler Explorer, do you have any updates for
   your answers in exercise-2?
+  - I now think that there's a significant overhead associated with repeated function calling with modular code. We need to find better ways to optimise it.
 
 ### Bonus: Do Not Watch Now 
 
