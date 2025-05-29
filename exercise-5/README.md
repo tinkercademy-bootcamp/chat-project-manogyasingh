@@ -62,7 +62,16 @@
 
 - How do you judge what makes a particular choice of namespace and directory
   structure? 
+  - look for the following attributes
+    - Cohesion: "birds of a feather should flock together", in practice this means keeping related methods in the same part of the codebase
+    - There should be a sensible dependency tree arising from the organisation. Avoid circular dependencies at all costs
+    - There should be a predictable place for modules, this relates to the cohesion point but it extends it to cohesion across levels.
+      - for example, `graphics/rendering/opengl/shader.h` makes sense but `utils/graphics/socket.h` doesnt
 - How do you judge what makes a good naming convention or programming style?
+  - clarity and consistency in naming is super important
+  - in the name, describe the intent, that is, what something is intended to do, not what it technically does. eg, use `UserAuth()` instead of `UserCredentialSHA256HashChecker()`. In general, one should describe the intent in name, the why in comments and the how in the code
+  - Overall if a codebase is easy to navigate, understand, expand, maintain and explain, both programming style and naming are good
+
 
 ## "Senses" in Programming
 
