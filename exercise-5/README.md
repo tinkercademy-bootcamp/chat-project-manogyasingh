@@ -1,12 +1,19 @@
 # Exercise 5
 
 **Update this README with your answers to the questions below.**
-//dummy
+
 ## Comparing File Changes
 
 - What's an easy way to identify the changes in source code from one exercise
   to another?
-    
+  - I use a tool called `meld` which has a nice GUI and is built on GTK3 (for context I use GNOME)
+  - from the CLI you can do `diff -ruwN exercise-4/src exercise-5/src` or install a tool `colordiff` then call `colordiff -ruwN exercise-4/src exercise-5/src`    
+  - `colordiff` is a fork of `diff` with color and is therefore easier to read
+  - the flags:
+    - r = recursive
+    - u = unified context (more readable)
+    - w = ignore whitespaces
+    - N = treat new files as previously existing but empty
 ## Using Classes
 
 - Here is one way to separate out the code into multiple files
