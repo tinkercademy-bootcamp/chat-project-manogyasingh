@@ -68,10 +68,33 @@
 
 - Have you ever heard of programmers referring to "code smells"? How can code
   smell?
+  - I think it refers to the programming style being suboptimal (or optimal in case it smells good!)
+  - Programming style doesn't include things like performance or bugs, it's about the quality of code in the sense of how readable and maintainable it is
+  - It's analogous to smell in the sense that even before you actually read it (see it well enough) you can say something's wrong with it
+  - Some principles like SOLID, KISS, YAGNI etc were created as guides on how to keep the programming style optimal
 - What does it mean to have a sense of taste in programming? How can code
   taste?
+  - I looked it up and apparently there's a whole system of idiomatically describing code attributes
+    - readibility tastes like something easy to digest
+    - consistency tastes like a balanced meal
+    - elegance and inventive solutions taste like exotic meals
+    - copy pasted code tastes stale
 - Is there an analogue for every sense?
+  - yes!
+    - code that appeals to vision is analogous to sensibly written and well formatted code
+    - smell discussed above
+    - taste discussed above
+    - hearing is about how the compiler and debugger react to your code, what signals it generates
+    - touch is how easy something is to work with, smooth vs rough interfaces. fast/slow function calls
 - What other code senses can you think of?
+  - intuition
+  - the sense of where you are and in what orientation, referring to how well you understand your position in code and its significance
+  - sense of time: code can feel dated/ not updated to the latest standards
 - How many senses do humans have?
+  - Five (vision taste smell hearing touch) are the classic ones
+  - orientation, location, intuition, idea of the timeline, temperature are some more (not strictly senses but close enough)
 - When would you want to see something before you touch it?
+  - when you have a well documented project and you want to know the codebase before working with it
+
 - When would you want to touch something before you see it?
+  - when playing with new things where you can probably learn faster by doing than by reading
