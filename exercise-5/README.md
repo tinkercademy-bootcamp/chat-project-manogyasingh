@@ -35,7 +35,20 @@
 ## Introduction to Namespace
 
 - There are different ways namespace is being used in this exercise
+  - I can see these:
+    - Namespace declaration inside a function (`send_and_receive_message()`) in `client-main.cc`
+    - functions inside namespace `tt::chat::server` in server-main.cc
+    - namespace aliasing in the `main()` function of `server-main,cc`
 - Which way is better? What are the advantages and disadvantages?
+  - For namespace inside function:
+    - Adv: This won't pollute the rest of the code
+    - Disadv: Can't be reused without being rewritten
+  - for functions inside namespace:
+    - Adv: Very natural heirarchical organisation, reusable code.
+    - Disadv: No access control, it will pollute every codespace where its included
+  - aliasing a namespace
+    - Adv: concise, easier to write multiple times
+    - Disadv: no additional disadvantages on its own, except perhaps making it harder to remember what the namespace originally referred to
 
 ## Abstracting Code into Classes
 
