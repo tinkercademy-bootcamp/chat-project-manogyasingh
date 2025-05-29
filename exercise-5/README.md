@@ -18,7 +18,19 @@
 
 - Here is one way to separate out the code into multiple files
 - Is this the best way to do it? 
+  - Depends on the situation. Here, given that the methods seperated into namespaces are related to each other, we could have used a class too.
 - What are the advantages and disadvantages?
+  - Advantages of namespaces
+    - can organise code
+    - frees you from worrying about same variables names being accidentally reused
+    - modularity = reusability, easier testing and maintainability
+    - Advantage over classes: is open and extensible. more natural for unrelated functions and constants because they don't need inheritance or encapsulation
+  - Disadvantages
+    - can make the code look complicated at a first glance
+    - Disadvantages over classes:
+      - no access control unlike classes
+      - no inheritance or encapsulation
+
 
 ## Introduction to Namespace
 
