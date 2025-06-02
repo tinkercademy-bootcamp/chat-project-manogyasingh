@@ -5,7 +5,7 @@ namespace tt::chat::server {
 Server::Server(int port) {
   port_ = port;
   server_socket_fd_ = create_server_socket();
-  address_ = create_server_address(port_);
+  address_ = create_server_address();
   bind_address_to_socket(server_socket_fd_, address_);
   std::cout << "Server listening on port " << port_ << "\n";
   listen_on_socket(server_socket_fd_);
@@ -53,9 +53,9 @@ void Server::handle_accept(int sock) {
   }
   close(sock);
 }
-sockaddr_in Server::create_server_address(int port) {
-  namespace ttn = tt::chat::net;
-  sockaddr_in address = ttn::create_address(port);
+
+sockaddr_in Server::create_server_address() {
+  sockaddr_in address = tt::chat::net::create_address(port_);
   address.sin_addr.s_addr = INADDR_ANY;
   return address;
 }
