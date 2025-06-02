@@ -10,12 +10,6 @@
 
 namespace tt::chat::server {
 
-void listen_on_socket(int sock) {
-  namespace ttc = tt::chat;
-  auto err_code = listen(sock, 3);
-  ttc::check_error(err_code < 0, "listen failed\n");
-}
-
 void handle_accept(int sock) {
   namespace ttc = tt::chat;
   const int kBufferSize = 1024;
@@ -64,7 +58,7 @@ int main() {
 
   // start listening on the socket
   ttc::server::Server::bind_address_to_socket(my_socket, address);
-  ttc::server::listen_on_socket(my_socket);
+  ttc::server::Server::listen_on_socket(my_socket);
 
   std::cout << "Server listening on port " << kPort << "\n";
   ttc::server::handle_connections(my_socket, address);

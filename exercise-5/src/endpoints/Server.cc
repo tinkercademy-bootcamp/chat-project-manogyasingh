@@ -18,4 +18,9 @@ void bind_address_to_socket(int sock, sockaddr_in &address) {
   auto err_code = bind(sock, (sockaddr *)&address, sizeof(address));
   ttc::check_error(err_code < 0, "bind failed\n");
 }
+void listen_on_socket(int sock) {
+  namespace ttc = tt::chat;
+  auto err_code = listen(sock, 3);
+  ttc::check_error(err_code < 0, "listen failed\n");
+}
 } // namespace tt::chat::server
