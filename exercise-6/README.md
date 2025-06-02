@@ -54,6 +54,13 @@ g++ src/spdlog-hello-world-main.cc -lspdlog -lfmt -o loghello
   - for headers: The one specified by the -I flag > file in #include "file" > system default include paths
   - for libs: specified dirs with -L > system default lib dirs
 - How do you find out?
+  ```
+  Print all paths: echo | g++ -v -x c++ - 2>&1
+  Only lib paths: g++ -print-search-dirs | grep ^libraries
+  Only header paths: g++ -E -x c++ - -v < /dev/null
+
+  Yet to figure out how these work
+  ```
 
 ## C++ Package Managers
 
