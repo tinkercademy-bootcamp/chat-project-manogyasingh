@@ -13,4 +13,9 @@ int Server::create_server_socket() {
   Server::set_socket_options(sock, 1);
   return sock;
 }
+void bind_address_to_socket(int sock, sockaddr_in &address) {
+  namespace ttc = tt::chat;
+  auto err_code = bind(sock, (sockaddr *)&address, sizeof(address));
+  ttc::check_error(err_code < 0, "bind failed\n");
+}
 } // namespace tt::chat::server

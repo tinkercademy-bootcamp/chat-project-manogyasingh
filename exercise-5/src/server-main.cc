@@ -10,12 +10,6 @@
 
 namespace tt::chat::server {
 
-void bind_address_to_socket(int sock, sockaddr_in &address) {
-  namespace ttc = tt::chat;
-  auto err_code = bind(sock, (sockaddr *)&address, sizeof(address));
-  ttc::check_error(err_code < 0, "bind failed\n");
-}
-
 void listen_on_socket(int sock) {
   namespace ttc = tt::chat;
   auto err_code = listen(sock, 3);
@@ -69,7 +63,7 @@ int main() {
   sockaddr_in address = ttc::server::create_server_address(kPort);
 
   // start listening on the socket
-  ttc::server::bind_address_to_socket(my_socket, address);
+  ttc::server::Server::bind_address_to_socket(my_socket, address);
   ttc::server::listen_on_socket(my_socket);
 
   std::cout << "Server listening on port " << kPort << "\n";
