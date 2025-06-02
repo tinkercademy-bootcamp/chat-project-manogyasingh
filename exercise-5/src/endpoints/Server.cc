@@ -1,7 +1,7 @@
 #include "Server.h"
 #include "../net/chat-sockets.h"
 
-namespace tt::chat::server {
+namespace tc::server {
 Server::Server(int port)
     : port_(port), server_socket_fd_(create_server_socket()),
       address_(create_server_address()) {
@@ -20,7 +20,7 @@ void Server::set_socket_options(int sock, int opt) {
 }
 
 int Server::create_server_socket() {
-  int sock = net::create_socket();
+  int sock = tt::chat::net::create_socket();
   Server::set_socket_options(sock, 1);
   return sock;
 }
@@ -66,7 +66,7 @@ void Server::handle_connections() {
   while (true) {
     int client_socket =
         accept(server_socket_fd_, (sockaddr *)&address_, &address_size);
-    check_error(client_socket < 0, "Couldn't accept the connected socket.\n");
+    tt::chat::check_error(client_socket < 0, "Couldn't accept the connected socket.\n");
     handle_accept(client_socket);
   }
 }
