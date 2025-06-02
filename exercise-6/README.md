@@ -30,8 +30,22 @@ g++ src/spdlog-hello-world-main.cc -lspdlog -lfmt -o loghello
 ## Static Linking vs Dynamic Linking
 
 - What are the differences between static linking and dynamic linking?
-- What are the tradeoffs?
+
+|Static Linking|Dynamic Linking|
+|---|---|
+|Code bound at compile time|Code bound at runtime|
+|The binary contains everything needed to run it|The binary calls the compiled library|
+|Better for making smaller self contained programs|Better for ecosystems that can share some libs|
+|Very slightly faster|.|
+|.|Less disk usage, especially if ecosystem is large|
+|Only need to ship 1 file|Need to ship the libs too|
+
+- What are the tradeoffs?'
+  - explained above
 - How do you enable static linking or dynamic linking in your makefile?
+  - Dynamic is the default
+  - Static: add -static to LD flags
+
 
 ## Git Clone and Building from Source
 
