@@ -11,13 +11,6 @@
 #include "utils.h"
 #include "endpoints/Client.h"
 
-void connect_to_server(int sock, sockaddr_in &server_address) {
-  using namespace tt::chat;
-  auto err_code =
-      connect(sock, (sockaddr *)&server_address, sizeof(server_address));
-  check_error(err_code < 0, "Connection Failed.\n");
-}
-
 void send_and_receive_message(int sock, const std::string &message) {
   using namespace tt::chat;
   const int kBufferSize = 1024;
@@ -59,7 +52,7 @@ int main(int argc, char *argv[]) {
   int my_socket = tt::chat::net::create_socket();
   sockaddr_in server_address = Client::create_server_address(kServerAddress, kPort);
 
-  connect_to_server(my_socket, server_address);
+  Client::connect_to_server(my_socket, server_address);
   send_and_receive_message(my_socket, message);
   close(my_socket);
 
