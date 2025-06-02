@@ -3,7 +3,6 @@
 
 #include "../net/chat-sockets.h"
 #include "../utils.h"
-#include <netinet/in.h>
 #include <string>
 
 class Client {

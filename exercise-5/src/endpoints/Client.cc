@@ -1,6 +1,5 @@
 #include "Client.h"
 #include "../net/chat-sockets.h"
-#include <arpa/inet.h>
 
 Client::Client(std::string server_address, int port){
   server_address_ = create_server_address(server_address,port);
