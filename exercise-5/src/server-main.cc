@@ -6,7 +6,7 @@ int main() {
 
   const int kPort = 8080;
   std::cout << "Starting Server...\n";
-  tc::server::Server thisserver(kPort);
+  tt::chat::server::Server thisserver(kPort);
 
   return 0;
 }

@@ -4,7 +4,7 @@
 #include "../utils.h"
 #include <netinet/in.h>
 
-namespace tc::server {
+namespace tt::chat::server {
 class Server {
 public:
   Server(int port);

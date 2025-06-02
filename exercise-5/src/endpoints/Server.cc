@@ -1,7 +1,7 @@
 #include "Server.h"
 #include "../net/chat-sockets.h"
 
-namespace tc::server {
+namespace tt::chat::server {
 Server::Server(int port)
     : port_(port), server_socket_fd_(create_server_socket()),
       address_(create_server_address()) {
