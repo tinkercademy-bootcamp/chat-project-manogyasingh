@@ -10,13 +10,6 @@
 
 namespace tt::chat::server {
 
-sockaddr_in create_server_address(int port) {
-  namespace ttn = tt::chat::net;
-  sockaddr_in address = ttn::create_address(port);
-  address.sin_addr.s_addr = INADDR_ANY;
-  return address;
-}
-
 void handle_connections(int sock, sockaddr_in &address) {
   socklen_t address_size = sizeof(address);
 
@@ -34,7 +27,7 @@ int main() {
   const int kPort = 8080;
 
   int my_socket = ttc::server::Server::create_server_socket();
-  sockaddr_in address = ttc::server::create_server_address(kPort);
+  sockaddr_in address = ttc::server::Server::create_server_address(kPort);
 
   // start listening on the socket
   ttc::server::Server::bind_address_to_socket(my_socket, address);

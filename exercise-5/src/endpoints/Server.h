@@ -12,6 +12,7 @@ public:
   static void bind_address_to_socket(int sock, sockaddr_in &address);
   static void listen_on_socket(int sock);
   static void handle_accept(int sock);
+  static sockaddr_in create_server_address(int port);
 };
 } // namespace tt::chat::server
 
