@@ -7,6 +7,9 @@
 namespace tt::chat::server {
 class Server {
 public:
+  Server(int port);
+  ~Server();
+  int port_;
   static void set_socket_options(int sock, int opt);
   static int create_server_socket();
   static void bind_address_to_socket(int sock, sockaddr_in &address);

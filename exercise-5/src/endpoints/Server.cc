@@ -2,6 +2,13 @@
 #include "../net/chat-sockets.h"
 
 namespace tt::chat::server {
+Server::Server(int port){
+  port_ = port;
+}
+Server::~Server(){
+  
+};
+
 void Server::set_socket_options(int sock, int opt) {
   namespace ttc = tt::chat;
   auto err_code = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
