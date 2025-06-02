@@ -58,6 +58,9 @@ g++ src/spdlog-hello-world-main.cc -lspdlog -lfmt -o loghello
 ## C++ Package Managers
 
 - Why are there so many C++ package managers?
+  - There's no official package manager like npm or pip so different communities made their own
+  - Many were made to support different OS's and different customers (enterprise/OSS devs/regular users)
 - Which one is the best one?
-
+  - vcpkg and Conan appear to be the most popular (implicitly the best)
 - Which are the most notable ways to manage the compilation of C++ projects?
+  - Make and CMake, Meson, GNUmake etc
