@@ -5,6 +5,7 @@
 #include "../utils.h"
 #include <string>
 
+namespace tt::chat::client {
 class Client {
 public:
   Client(std::string server_address, int port);
@@ -18,5 +19,6 @@ private:
   static sockaddr_in create_server_address(const std::string &server_ip,
                                            int port);
 };
+} // namespace tt::chat::client
 
 #endif

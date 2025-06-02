@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 
   std::string message = read_message(argc, argv);
 
-  Client thisclient (kServerAddress,kPort);
+  tt::chat::client::Client thisclient (kServerAddress,kPort);
   thisclient.send_and_receive_message(message);
 
   return 0;
