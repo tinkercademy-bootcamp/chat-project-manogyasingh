@@ -16,6 +16,10 @@ g++ src/spdlog-hello-world-main.cc -lspdlog -lfmt -o loghello
 - What do you need to change in your makefile to use this library?
   - Add the two library linking flags to the makefile
 - How many different ways can this library be added into your project?
+  - Can copy-paste and include the header folder.
+    - Easy and portable but longer compile times
+  - Can download compiled version (best option if can't use package manager)
+  - Use system package manager (best)
 - What are the tradeoffs in the different ways?
 - Why are there so many different ways to do it?
   
