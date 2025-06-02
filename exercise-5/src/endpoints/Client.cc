@@ -18,3 +18,22 @@ void Client::connect_to_server(int sock, sockaddr_in &server_address) {
       connect(sock, (sockaddr *)&server_address, sizeof(server_address));
   check_error(err_code < 0, "Connection Failed.\n");
 };
+
+void Client::send_and_receive_message(int sock, const std::string &message) {
+  using namespace tt::chat;
+  const int kBufferSize = 1024;
+  char recv_buffer[kBufferSize] = {0};
+
+  // Send the message to the server
+  send(sock, message.c_str(), message.size(), 0);
+  std::cout << "Sent: " << message << "\n";
+
+  // Receive response from the server
+  ssize_t read_size = read(sock, recv_buffer, kBufferSize);
+  check_error(read_size < 0, "Read error.\n");
+  if (read_size > 0) {
+    std::cout << "Received: " << recv_buffer << "\n";
+  } else if (read_size == 0) {
+    std::cout << "Server closed connection.\n";
+  }
+}

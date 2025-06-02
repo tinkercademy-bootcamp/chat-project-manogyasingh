@@ -11,6 +11,8 @@ public:
                                            int port);
 
   static void connect_to_server(int sock, sockaddr_in &server_address);
+
+  static void send_and_receive_message(int sock, const std::string &message);
 };
 
 #endif
