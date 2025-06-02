@@ -50,10 +50,14 @@ g++ src/spdlog-hello-world-main.cc -lspdlog -lfmt -o loghello
 ## Git Clone and Building from Source
 
 - Where is `g++` looking for the include files and library files?
+  - There's a whole header search order and library search order for this
+  - for headers: The one specified by the -I flag > file in #include "file" > system default include paths
+  - for libs: specified dirs with -L > system default lib dirs
 - How do you find out?
 
 ## C++ Package Managers
 
 - Why are there so many C++ package managers?
 - Which one is the best one?
+
 - Which are the most notable ways to manage the compilation of C++ projects?
