@@ -19,7 +19,7 @@ TBD
 * https://www.youtube.com/watch?v=VRGRTvfOxb4 - Almost Always Vector
 
 ## Week 2
-* https://www.youtube.com/watch?v=VRGRTvfOxb4 - std::algorithms and ranges
+* https://www.youtube.com/watch?v=eJCA2fynzME - std::algorithms and ranges
 * https://www.youtube.com/watch?v=6-WH9Hnec1M - Thinking Functionally in C++
 
 ## Bonus (Very hard)
