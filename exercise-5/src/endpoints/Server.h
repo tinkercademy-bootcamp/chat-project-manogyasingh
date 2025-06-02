@@ -5,9 +5,10 @@
 
 namespace tt::chat::server {
 class Server {
-    public:
+public:
   static void set_socket_options(int sock, int opt);
+  static int create_server_socket();
 };
-}
+} // namespace tt::chat::server
 
 #endif
