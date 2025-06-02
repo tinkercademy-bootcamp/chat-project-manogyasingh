@@ -9,15 +9,7 @@
 
 #include "net/chat-sockets.h"
 #include "utils.h"
-
-sockaddr_in create_server_address(const std::string &server_ip, int port) {
-  using namespace tt::chat;
-  sockaddr_in address = net::create_address(port);
-  // Convert the server IP address to a binary format
-  auto err_code = inet_pton(AF_INET, server_ip.c_str(), &address.sin_addr);
-  check_error(err_code <= 0, "Invalid address/ Address not supported\n");
-  return address;
-}
+#include "endpoints/Client.h"
 
 void connect_to_server(int sock, sockaddr_in &server_address) {
   using namespace tt::chat;
@@ -65,7 +57,7 @@ int main(int argc, char *argv[]) {
   std::string message = read_args(argc, argv);
 
   int my_socket = tt::chat::net::create_socket();
-  sockaddr_in server_address = create_server_address(kServerAddress, kPort);
+  sockaddr_in server_address = Client::create_server_address(kServerAddress, kPort);
 
   connect_to_server(my_socket, server_address);
   send_and_receive_message(my_socket, message);
