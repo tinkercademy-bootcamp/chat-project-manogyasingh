@@ -2,6 +2,13 @@
 #include "../net/chat-sockets.h"
 #include <arpa/inet.h>
 
+Client::Client(std::string server_address, int port){
+  
+};
+Client::~Client(){
+
+};
+
 sockaddr_in Client::create_server_address(const std::string &server_ip,
                                           int port) {
   using namespace tt::chat;
