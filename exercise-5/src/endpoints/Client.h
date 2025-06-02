@@ -2,6 +2,7 @@
 #define CLIENT_H
 
 #include "../utils.h"
+#include "../net/chat-sockets.h"
 #include <netinet/in.h>
 #include <string>
 
