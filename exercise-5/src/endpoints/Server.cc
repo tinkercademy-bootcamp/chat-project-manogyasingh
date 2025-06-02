@@ -2,18 +2,16 @@
 #include "../net/chat-sockets.h"
 
 namespace tt::chat::server {
-Server::Server(int port){
+Server::Server(int port) {
   port_ = port;
   server_socket_fd_ = create_server_socket();
   address_ = create_server_address(port_);
   bind_address_to_socket(server_socket_fd_, address_);
   std::cout << "Server listening on port " << port_ << "\n";
   listen_on_socket(server_socket_fd_);
-  handle_connections(server_socket_fd_, address_);
+  handle_connections();
 }
-Server::~Server(){
-  close (server_socket_fd_);
-};
+Server::~Server() { close(server_socket_fd_); };
 
 void Server::set_socket_options(int sock, int opt) {
   namespace ttc = tt::chat;
@@ -61,13 +59,11 @@ sockaddr_in Server::create_server_address(int port) {
   address.sin_addr.s_addr = INADDR_ANY;
   return address;
 }
-void Server::handle_connections(int sock, sockaddr_in &address) {
-  socklen_t address_size = sizeof(address);
 
+void Server::handle_connections() {
+  socklen_t address_size = sizeof(address_);
   while (true) {
-    int accepted_socket = accept(sock, (sockaddr *)&address, &address_size);
-    check_error(accepted_socket < 0, "Accept error n ");
-    Server::handle_accept(accepted_socket);
+    int accepted_socket = accept(server_socket_fd_, (sockaddr *)&address_, &address_size);
   }
 }
 
