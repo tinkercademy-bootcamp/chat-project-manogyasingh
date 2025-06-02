@@ -10,26 +10,6 @@
 
 namespace tt::chat::server {
 
-void handle_accept(int sock) {
-  namespace ttc = tt::chat;
-  const int kBufferSize = 1024;
-  char buffer[kBufferSize] = {0};
-  ssize_t read_size = read(sock, buffer, kBufferSize);
-
-  ttc::check_error(read_size < 0,
-                   "Read error on client socket " + std::to_string(sock));
-  if (read_size > 0) {
-    std::cout << "Received:" << buffer << "\n";
-    send(sock, buffer, read_size, 0);
-    std::cout << "Echo message sent\n";
-  } else if (read_size == 0) {
-    std::cout << "Client disconnected.\n";
-  } else {
-    std::cerr << "Read error on client socket " << sock << "\n";
-  }
-  close(sock);
-}
-
 sockaddr_in create_server_address(int port) {
   namespace ttn = tt::chat::net;
   sockaddr_in address = ttn::create_address(port);
@@ -43,7 +23,7 @@ void handle_connections(int sock, sockaddr_in &address) {
   while (true) {
     int accepted_socket = accept(sock, (sockaddr *)&address, &address_size);
     check_error(accepted_socket < 0, "Accept error n ");
-    handle_accept(accepted_socket);
+    Server::handle_accept(accepted_socket);
   }
 }
 
