@@ -20,8 +20,12 @@ g++ src/spdlog-hello-world-main.cc -lspdlog -lfmt -o loghello
     - Easy and portable but longer compile times
   - Can download compiled version (best option if can't use package manager)
   - Use system package manager (best)
+  - System packages, but static
+    - faster when running, more portable, longer time to compile
 - What are the tradeoffs in the different ways?
+  - explained above
 - Why are there so many different ways to do it?
+  - They're all essentially doing the same thing, ie, linking either statically or dynamically, but the method of downloading is different
   
 ## Static Linking vs Dynamic Linking
 
