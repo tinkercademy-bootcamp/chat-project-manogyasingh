@@ -3,7 +3,8 @@
 #include <arpa/inet.h>
 
 Client::Client(std::string server_address, int port){
-  
+  server_address_ = create_server_address(server_address,port);
+  socket_fd_ = tt::chat::net::create_socket();
 };
 Client::~Client(){
 
@@ -19,24 +20,24 @@ sockaddr_in Client::create_server_address(const std::string &server_ip,
   return address;
 }
 
-void Client::connect_to_server(int sock, sockaddr_in &server_address) {
+void Client::connect_to_server() {
   using namespace tt::chat;
   auto err_code =
-      connect(sock, (sockaddr *)&server_address, sizeof(server_address));
+      connect(socket_fd_, (sockaddr *)&server_address_, sizeof(server_address_));
   check_error(err_code < 0, "Connection Failed.\n");
 };
 
-void Client::send_and_receive_message(int sock, const std::string &message) {
+void Client::send_and_receive_message(const std::string &message) {
   using namespace tt::chat;
   const int kBufferSize = 1024;
   char recv_buffer[kBufferSize] = {0};
 
   // Send the message to the server
-  send(sock, message.c_str(), message.size(), 0);
+  send(socket_fd_, message.c_str(), message.size(), 0);
   std::cout << "Sent: " << message << "\n";
 
   // Receive response from the server
-  ssize_t read_size = read(sock, recv_buffer, kBufferSize);
+  ssize_t read_size = read(socket_fd_, recv_buffer, kBufferSize);
   check_error(read_size < 0, "Read error.\n");
   if (read_size > 0) {
     std::cout << "Received: " << recv_buffer << "\n";

@@ -27,13 +27,10 @@ int main(int argc, char *argv[]) {
 
   std::string message = read_message(argc, argv);
 
-  int my_socket = tt::chat::net::create_socket();
-  sockaddr_in server_address =
-      Client::create_server_address(kServerAddress, kPort);
-
-  Client::connect_to_server(my_socket, server_address);
-  Client::send_and_receive_message(my_socket, message);
-  close(my_socket);
+  Client thisclient (kServerAddress,kPort);
+  
+  thisclient.connect_to_server();
+  thisclient.send_and_receive_message(message);
 
   return 0;
 }
