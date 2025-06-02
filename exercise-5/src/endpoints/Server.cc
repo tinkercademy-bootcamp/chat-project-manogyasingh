@@ -48,5 +48,14 @@ sockaddr_in Server::create_server_address(int port) {
   address.sin_addr.s_addr = INADDR_ANY;
   return address;
 }
+void Server::handle_connections(int sock, sockaddr_in &address) {
+  socklen_t address_size = sizeof(address);
+
+  while (true) {
+    int accepted_socket = accept(sock, (sockaddr *)&address, &address_size);
+    check_error(accepted_socket < 0, "Accept error n ");
+    Server::handle_accept(accepted_socket);
+  }
+}
 
 } // namespace tt::chat::server

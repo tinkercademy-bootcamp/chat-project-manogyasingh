@@ -4,23 +4,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "net/chat-sockets.h"
-#include "utils.h"
 #include "endpoints/Server.h"
-
-namespace tt::chat::server {
-
-void handle_connections(int sock, sockaddr_in &address) {
-  socklen_t address_size = sizeof(address);
-
-  while (true) {
-    int accepted_socket = accept(sock, (sockaddr *)&address, &address_size);
-    check_error(accepted_socket < 0, "Accept error n ");
-    Server::handle_accept(accepted_socket);
-  }
-}
-
-} // namespace tt::chat::server
 
 int main() {
   namespace ttc = tt::chat;
@@ -34,7 +18,7 @@ int main() {
   ttc::server::Server::listen_on_socket(my_socket);
 
   std::cout << "Server listening on port " << kPort << "\n";
-  ttc::server::handle_connections(my_socket, address);
+  ttc::server::Server::handle_connections(my_socket, address);
   close(my_socket);
 
   return 0;
