@@ -10,13 +10,16 @@ public:
   Server(int port);
   ~Server();
   int port_;
+  int server_socket_fd_;
+  sockaddr_in address_;
   static void set_socket_options(int sock, int opt);
   static int create_server_socket();
-  static void bind_address_to_socket(int sock, sockaddr_in &address);
-  static void listen_on_socket(int sock);
+  void listen_on_socket(int sock);
   static void handle_accept(int sock);
   static sockaddr_in create_server_address(int port);
-  static void handle_connections(int sock, sockaddr_in &address);
+  void handle_connections(int sock, sockaddr_in &address);
+private:
+  void bind_address_to_socket(int sock, sockaddr_in &address);
 };
 } // namespace tt::chat::server
 

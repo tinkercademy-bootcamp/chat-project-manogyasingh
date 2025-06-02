@@ -4,9 +4,15 @@
 namespace tt::chat::server {
 Server::Server(int port){
   port_ = port;
+  server_socket_fd_ = create_server_socket();
+  address_ = create_server_address(port_);
+  bind_address_to_socket(server_socket_fd_, address_);
+  std::cout << "Server listening on port " << port_ << "\n";
+  listen_on_socket(server_socket_fd_);
+  handle_connections(server_socket_fd_, address_);
 }
 Server::~Server(){
-  
+  close (server_socket_fd_);
 };
 
 void Server::set_socket_options(int sock, int opt) {
