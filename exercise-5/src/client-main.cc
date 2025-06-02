@@ -28,8 +28,6 @@ int main(int argc, char *argv[]) {
   std::string message = read_message(argc, argv);
 
   Client thisclient (kServerAddress,kPort);
-  
-  thisclient.connect_to_server();
   thisclient.send_and_receive_message(message);
 
   return 0;

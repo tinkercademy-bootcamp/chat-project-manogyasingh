@@ -5,6 +5,7 @@
 Client::Client(std::string server_address, int port){
   server_address_ = create_server_address(server_address,port);
   socket_fd_ = tt::chat::net::create_socket();
+  connect_to_server();
 };
 Client::~Client(){
 

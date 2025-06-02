@@ -18,7 +18,6 @@ public:
 
   void connect_to_server();
 
-
   void send_and_receive_message(const std::string &message);
 };
 
