@@ -45,4 +45,11 @@
   the source code and build it
 - What are the tradeoffs between using a library from `usr/lib` vs git cloning
   the source and using that instead?
+
+  |/usr/lib/|git clone|
+  |-|-|
+  |Easier to manage (can use system package managers for it)|Will have to use `git pull` and then rebuild|
+  |limited to the version availabe in your pm's repo (you could theoretically add new sources or just install it there yourself but that effort is a tradeoff in itself)|bleeding edge all the time|
+  |you'll need root privileges|works without root|
+  |integrates with your whole system|integrates only with your project|
 - What is the difference between `-l` and `-L` when linking using `g++`?
