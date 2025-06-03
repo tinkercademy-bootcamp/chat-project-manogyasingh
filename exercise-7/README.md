@@ -53,3 +53,5 @@
   |you'll need root privileges|works without root|
   |integrates with your whole system|integrates only with your project|
 - What is the difference between `-l` and `-L` when linking using `g++`?
+  - `-L` specifies the directory to look in
+  - `-l` specifies the library to look for
