@@ -31,6 +31,13 @@ std::string read_username () {
   return username;
 }
 
+void get_message (std::string &target_user, std::string &message){
+  std::cout << "Send to @";
+  std::cin >> target_user;
+  std::cout << "Enter your message: ";
+  std::cin >> message;
+}
+
 int main(int argc, char *argv[]) {
   const int kPort = 8080;
   const std::string kServerAddress = "127.0.0.1";
