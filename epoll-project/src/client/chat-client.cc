@@ -8,8 +8,9 @@ tt::chat::client::Client::Client(int port, const std::string &server_address)
   connect_to_server(socket_, address);
 }
 
-std::string
-tt::chat::client::Client::send_message(std::string target_user,
+tt::chat::client::Client::~Client() { close(socket_); }
+
+std::string tt::chat::client::Client::send_message(std::string target_user,
                                                    const std::string &message) {
   using namespace tt::chat;
   char recv_buffer[kBufferSize] = {0};
@@ -29,8 +30,6 @@ tt::chat::client::Client::send_message(std::string target_user,
   }
 }
 
-tt::chat::client::Client::~Client() { close(socket_); }
-
 sockaddr_in
 tt::chat::client::Client::create_server_address(const std::string &server_ip,
                                                 int port) {
@@ -48,4 +47,9 @@ void tt::chat::client::Client::connect_to_server(int sock,
   auto err_code =
       connect(sock, (sockaddr *)&server_address, sizeof(server_address));
   check_error(err_code < 0, "Connection Failed.\n");
+}
+
+void tt::chat::client::Client::set_username() {
+  std::cout << "Choose a username! @";
+  std::cin >> username_;
 }

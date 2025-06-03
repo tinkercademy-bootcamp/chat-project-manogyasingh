@@ -8,16 +8,17 @@ namespace tt::chat::client {
 class Client {
 public:
   Client(int port, const std::string &server_address);
-  std::string send_message(std::string target_user,
-                                       const std::string &message);
+  std::string send_message(std::string target_user, const std::string &message);
   ~Client();
 
 private:
   int socket_;
-  sockaddr_in create_server_address(const std::string &server_ip, int port);
-  void connect_to_server(int sock, sockaddr_in &server_address);
-
+  int username_;
   static constexpr int kBufferSize = 1024;
+  sockaddr_in create_server_address(const std::string &server_ip, int port);
+
+  void set_username();
+  void connect_to_server(int sock, sockaddr_in &server_address);
 };
 } // namespace tt::chat::client
 
