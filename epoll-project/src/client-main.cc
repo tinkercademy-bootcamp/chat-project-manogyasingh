@@ -24,6 +24,13 @@ std::string read_args(int argc, char *argv[]) {
 }
 } // namespace
 
+std::string read_username () {
+  std::cout << "Choose a username! @";
+  std::string username;
+  std::cin >> username;
+  return username;
+}
+
 int main(int argc, char *argv[]) {
   const int kPort = 8080;
   const std::string kServerAddress = "127.0.0.1";
