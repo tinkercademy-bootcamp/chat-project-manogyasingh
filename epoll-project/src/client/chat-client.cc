@@ -2,15 +2,15 @@
 #include "../net/chat-sockets.h"
 #include "../utils.h"
 
-tt::chat::client::Client::Client(int port,
-                                         const std::string &server_address)
+tt::chat::client::Client::Client(int port, const std::string &server_address)
     : socket_{tt::chat::net::create_socket()} {
   sockaddr_in address = create_server_address(server_address, port);
   connect_to_server(socket_, address);
 }
 
-std::string tt::chat::client::Client::send_and_receive_message(
-    const std::string &message) {
+std::string
+tt::chat::client::Client::send_and_receive_message(std::string target_user,
+                                                   const std::string &message) {
   using namespace tt::chat;
   char recv_buffer[kBufferSize] = {0};
 
@@ -31,8 +31,9 @@ std::string tt::chat::client::Client::send_and_receive_message(
 
 tt::chat::client::Client::~Client() { close(socket_); }
 
-sockaddr_in tt::chat::client::Client::create_server_address(
-    const std::string &server_ip, int port) {
+sockaddr_in
+tt::chat::client::Client::create_server_address(const std::string &server_ip,
+                                                int port) {
   using namespace tt::chat;
   sockaddr_in address = net::create_address(port);
   // Convert the server IP address to a binary format
@@ -41,8 +42,8 @@ sockaddr_in tt::chat::client::Client::create_server_address(
   return address;
 }
 
-void tt::chat::client::Client::connect_to_server(
-    int sock, sockaddr_in &server_address) {
+void tt::chat::client::Client::connect_to_server(int sock,
+                                                 sockaddr_in &server_address) {
   using namespace tt::chat;
   auto err_code =
       connect(sock, (sockaddr *)&server_address, sizeof(server_address));

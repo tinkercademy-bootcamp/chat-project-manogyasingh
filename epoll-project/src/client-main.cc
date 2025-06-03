@@ -9,21 +9,6 @@
 
 #include "client/chat-client.h"
 
-namespace {
-std::string read_args(int argc, char *argv[]) {
-  using namespace tt::chat;
-  std::string message = "Hello from client";
-  if (argc == 1) {
-    std::cout << "Usage: " << argv[0] << " <message>\n";
-    exit(EXIT_FAILURE);
-  }
-  if (argc > 1) {
-    message = argv[1];
-  }
-  return message;
-}
-} // namespace
-
 std::string read_username () {
   std::cout << "Choose a username! @";
   std::string username;
@@ -38,15 +23,21 @@ void get_message (std::string &target_user, std::string &message){
   std::cin >> message;
 }
 
-int main(int argc, char *argv[]) {
+int main() {
   const int kPort = 8080;
   const std::string kServerAddress = "127.0.0.1";
 
-  std::string message = read_args(argc, argv);
+  std::string username = read_username();
+
+  std::string target_user = "";
+  std::string message = "";
 
   tt::chat::client::Client client{kPort, kServerAddress};
 
-  std::string response = client.send_and_receive_message(message);
+  while (true){
+    get_message(target_user,message);
+    std::string response = client.send_and_receive_message(target_user,message);
+  }
 
   return 0;
 }
