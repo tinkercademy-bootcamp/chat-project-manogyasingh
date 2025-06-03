@@ -9,7 +9,7 @@ tt::chat::client::Client::Client(int port, const std::string &server_address)
 }
 
 std::string
-tt::chat::client::Client::send_and_receive_message(std::string target_user,
+tt::chat::client::Client::send_message(std::string target_user,
                                                    const std::string &message) {
   using namespace tt::chat;
   char recv_buffer[kBufferSize] = {0};

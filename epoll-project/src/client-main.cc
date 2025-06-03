@@ -28,7 +28,6 @@ int main() {
   const std::string kServerAddress = "127.0.0.1";
 
   std::string username = read_username();
-
   std::string target_user = "";
   std::string message = "";
 
@@ -36,7 +35,7 @@ int main() {
 
   while (true){
     get_message(target_user,message);
-    std::string response = client.send_and_receive_message(target_user,message);
+    std::string response = client.send_message(target_user,message);
   }
 
   return 0;
