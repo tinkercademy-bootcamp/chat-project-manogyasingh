@@ -7,36 +7,27 @@
 #include "chat-server.h"
 
 tt::chat::server::Server::Server(int port)
-    : socket_(tt::chat::net::create_socket()),
+    : server_socket_fd_(tt::chat::net::create_socket()),
       address_(tt::chat::net::create_address(port)) {
   using namespace tt::chat;
-  set_socket_options(socket_, 1);
+  set_socket_options(server_socket_fd_, 1);
 
   address_.sin_addr.s_addr = INADDR_ANY;
 
-  auto err_code = bind(socket_, (sockaddr *)&address_, sizeof(address_));
+  auto err_code =
+      bind(server_socket_fd_, (sockaddr *)&address_, sizeof(address_));
   tt::chat::check_error(err_code < 0, "bind failed\n");
 
-  err_code = listen(socket_, 3);
-  setup_epoll();
+  err_code = listen(server_socket_fd_, 3);
   check_error(err_code < 0, "listen failed\n");
-
   std::cout << "Server listening on port " << port << "\n";
+  setup_epoll();
+  handle_connections_epoll();
 }
 
 tt::chat::server::Server::~Server() {
-  close(socket_);
+  close(server_socket_fd_);
   close(epoll_fd_);
-}
-
-void tt::chat::server::Server::handle_connections() {
-  socklen_t address_size = sizeof(address_);
-
-  while (true) {
-    int accepted_socket = accept(socket_, (sockaddr *)&address_, &address_size);
-    tt::chat::check_error(accepted_socket < 0, "Accept error n ");
-    handle_accept(accepted_socket);
-  }
 }
 
 void tt::chat::server::Server::handle_connections_epoll() {
@@ -45,12 +36,12 @@ void tt::chat::server::Server::handle_connections_epoll() {
   while (true) {
     int nfds = epoll_wait(epoll_fd_, events, kMaxEvents, -1);
     for (int i = 0; i < nfds; i++) {
-      if (events[i].data.fd == socket_) { // check for new connections
-        //currently only trying to get one client to connect
-        //for this, using the same logic as before
+      if (events[i].data.fd == server_socket_fd_) { // check for new connections
+        // currently only trying to get one client to connect
+        // for this, using the same logic as before
         socklen_t address_size = sizeof(address_);
         int accepted_socket =
-            accept(socket_, (sockaddr *)&address_, &address_size);
+            accept(server_socket_fd_, (sockaddr *)&address_, &address_size);
         tt::chat::check_error(accepted_socket < 0, "Accept error n ");
         handle_accept(accepted_socket);
       }
@@ -78,7 +69,7 @@ void tt::chat::server::Server::handle_accept(int sock) {
   } else if (read_size == 0) {
     SPDLOG_INFO("Client disconnected.");
   } else {
-    SPDLOG_ERROR("Read error on client socket {}", socket_);
+    SPDLOG_ERROR("Read error on client socket {}", server_socket_fd_);
   }
   close(sock);
 }
@@ -93,7 +84,7 @@ void tt::chat::server::Server::set_non_blocking(int sock) {
 void tt::chat::server::Server::setup_epoll() {
   epoll_fd_ = epoll_create1(0);
   tt::chat::check_error(epoll_fd_ < 0, "Couldn't make epoll socket");
-  add_to_epoll(socket_, EPOLLIN | EPOLLET);
+  add_to_epoll(server_socket_fd_, EPOLLIN | EPOLLET);
 }
 
 void tt::chat::server::Server::add_to_epoll(int sock, uint32_t events) {

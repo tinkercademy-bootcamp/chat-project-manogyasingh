@@ -1,9 +1,9 @@
 #ifndef CHAT_SERVER_H
 #define CHAT_SERVER_H
 
+#include "../utils.h"
 #include <fcntl.h>
 #include <netinet/in.h>
-#include "../utils.h"
 
 namespace tt::chat::server {
 
@@ -16,7 +16,7 @@ public:
 
 private:
   int epoll_fd_;
-  int socket_;
+  int server_socket_fd_;
   sockaddr_in address_;
   static const int kMaxEvents = 64;
   static constexpr int kBufferSize = 1024;
@@ -27,7 +27,7 @@ private:
   void handle_accept(int sock);
 
   static void set_socket_options(int sock, int opt);
-  static void set_non_blocking (int sock);
+  static void set_non_blocking(int sock);
 };
 } // namespace tt::chat::server
 
