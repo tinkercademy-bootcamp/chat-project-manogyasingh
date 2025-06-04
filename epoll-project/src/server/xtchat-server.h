@@ -1,12 +1,14 @@
 #ifndef XTCHAT_SERVER_H
 #define XTCHAT_SERVER_H
 
-#include "../common/error_handling/error_handling.h"
-#include "../common/net/socket_helper.h"
 #include <fcntl.h>
 #include <netinet/in.h>
+
 #include <string>
 #include <unordered_map>
+
+#include "../common/error_handling/error_handling.h"
+#include "../common/net/socket_helper.h"
 
 namespace xtc::server {
 
@@ -17,21 +19,21 @@ class ClientDataOnServer {
 };
 
 class Server {
-public:
+ public:
   Server(int port);
   ~Server();
   void start();
 
-private:
+ private:
   int epoll_fd_;
   int server_socket_fd_;
   sockaddr_in server_address_;
   std::unordered_map<int, ClientDataOnServer> clients_dict_;
-  void set_socket_options(int sock, int opt);
+  void set_socket_options(int sock_fd, int opt);
 
-      static const int kMaxEvents = 64;
+  static const int kMaxEvents = 64;
   static constexpr int kBufferSize = 1024;
 };
-} // namespace xtc::server
+}  // namespace xtc::server
 
-#endif // XTCHAT_SERVER_H
+#endif  // XTCHAT_SERVER_H
