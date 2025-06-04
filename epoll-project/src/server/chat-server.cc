@@ -1,5 +1,6 @@
 #include <spdlog/spdlog.h>
 #include <sys/epoll.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include "../net/chat-sockets.h"
@@ -37,13 +38,9 @@ void tt::chat::server::Server::handle_connections_epoll() {
     int nfds = epoll_wait(epoll_fd_, events, kMaxEvents, -1);
     for (int i = 0; i < nfds; i++) {
       if (events[i].data.fd == server_socket_fd_) { // check for new connections
-        // currently only trying to get one client to connect
-        // for this, using the same logic as before
-        socklen_t address_size = sizeof(address_);
-        int accepted_socket =
-            accept(server_socket_fd_, (sockaddr *)&address_, &address_size);
-        tt::chat::check_error(accepted_socket < 0, "Accept error n ");
-        handle_accept(accepted_socket);
+        handle_new_connection();
+      } else {
+        handle_existing_connection(events[i].data.fd);
       }
     }
   }
@@ -93,12 +90,22 @@ void tt::chat::server::Server::handle_new_connection(){
 
 void tt::chat::server::Server::handle_existing_connection(int sock){
   char buffer[kBufferSize];
-  ssize_t count = read (sock,buffer, sizeof(buffer));
-  if (count>0){
-    // forward the message where it's supposed to be
-    send(sock, buffer, count, MSG_NOSIGNAL); //echo for now
-  } else if (count == 0){
-    disconnect_client(sock);
+  
+  while (true){
+    ssize_t count = read(sock, buffer, sizeof(buffer));
+    if (count < 0) {
+      disconnect_client(sock); return;
+    }
+    clients_[sock].buffer.append(buffer,count);
+    ClientDataOnServer& client = clients_[sock];
+    size_t posn;
+    while ((posn = client.buffer.find('\n'))!=std::string::npos){
+      std::string message = client.buffer.substr(0,posn);
+      client.buffer.erase(0,posn+1);
+
+      std::string echo = message+"\n";
+      send(sock,echo.c_str(),echo.length(),MSG_NOSIGNAL);
+    }
   }
 }
 
