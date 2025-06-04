@@ -78,4 +78,5 @@ void tt::chat::server::Server::add_to_epoll(int sock, uint32_t events){
   ev.data.fd= sock;
 
   int err_code = epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, sock, &ev);
+  tt::chat::check_error(err_code<0, "Could not add event to epoll")
 }
