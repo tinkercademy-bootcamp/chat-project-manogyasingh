@@ -91,7 +91,16 @@ void tt::chat::server::Server::handle_new_connection(){
   }
 }
 
-
+void tt::chat::server::Server::handle_existing_connection(int sock){
+  char buffer[kBufferSize];
+  ssize_t count = read (sock,buffer, sizeof(buffer));
+  if (count>0){
+    // forward the message where it's supposed to be
+    send(sock, buffer, count, MSG_NOSIGNAL); //echo for now
+  } else if (count == 0){
+    disconnect_client(sock);
+  }
+}
 
 void tt::chat::server::Server::set_non_blocking(int sock) {
   int flags = fcntl(sock, F_GETFL, 0);
