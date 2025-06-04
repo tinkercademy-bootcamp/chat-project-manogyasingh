@@ -32,6 +32,9 @@ private:
   void add_to_epoll(int sock, uint32_t events);
   void remove_from_epoll(int sock);
   void handle_accept(int sock);
+  void handle_new_connection();
+  void handle_existing_connection(int sock);
+  void disconnect_client (int sock);
 
   static void set_socket_options(int sock, int opt);
   static void set_non_blocking(int sock);
