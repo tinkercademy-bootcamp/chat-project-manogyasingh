@@ -1,6 +1,5 @@
 #include <unistd.h>
-
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 
 #include "../net/chat-sockets.h"
 #include "../utils.h"
