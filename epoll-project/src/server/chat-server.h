@@ -18,6 +18,7 @@ private:
   int epoll_fd_;
   int socket_;
   sockaddr_in address_;
+  static const int kMaxEvents = 64;
   static constexpr int kBufferSize = 1024;
 
   void setup_epoll();

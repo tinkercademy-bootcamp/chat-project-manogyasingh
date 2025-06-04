@@ -39,8 +39,23 @@ void tt::chat::server::Server::handle_connections() {
   }
 }
 
-void tt::chat::server::Server::handle_connections_epoll(){
-  
+void tt::chat::server::Server::handle_connections_epoll() {
+  epoll_event events[kMaxEvents];
+
+  while (true) {
+    int nfds = epoll_wait(epoll_fd_, events, kMaxEvents, -1);
+    for (int i = 0; i < nfds; i++) {
+      if (events[i].data.fd == socket_) { // check for new connections
+        //currently only trying to get one client to connect
+        //for this, using the same logic as before
+        socklen_t address_size = sizeof(address_);
+        int accepted_socket =
+            accept(socket_, (sockaddr *)&address_, &address_size);
+        tt::chat::check_error(accepted_socket < 0, "Accept error n ");
+        handle_accept(accepted_socket);
+      }
+    }
+  }
 }
 
 void tt::chat::server::Server::set_socket_options(int sock, int opt) {
