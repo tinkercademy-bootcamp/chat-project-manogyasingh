@@ -3,33 +3,12 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-template <typename T, typename S> void check_error(T test, S error_message) {
-  if (test) {
-    std::cerr << error_message << "\n";
-    exit(EXIT_FAILURE);
-  }
-}
-
-int create_socket() {
-  int my_sock;
-  my_sock = socket(AF_INET, SOCK_STREAM, 0);
-  check_error(my_sock < 0, "Socket creation error\n");
-  return my_sock;
-}
+#include "common_utils.h"
 
 void set_socket_options(int sock, int opt) {
   auto err_code = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
                              &opt, sizeof(opt));
   check_error(err_code < 0, "setsockopt() error\n");
-}
-
-sockaddr_in create_address(int port) {
-  sockaddr_in address;
-  address.sin_family = AF_INET;
-  address.sin_addr.s_addr = INADDR_ANY;
-  address.sin_port = htons(port);
-  return address;
 }
 
 void bind_address_to_socket(int sock, sockaddr_in &address) {
@@ -51,7 +30,6 @@ void start_listening_on_socket(int my_socket, sockaddr_in &address) {
 }
 
 void handle_accept(int sock) {
-  const int kBufferSize = 1024;
   char buffer[kBufferSize] = {0};
   ssize_t read_size = read(sock, buffer, kBufferSize);
 
@@ -81,7 +59,6 @@ void handle_connections(int sock, int port) {
 }
 
 int main() {
-  const int kPort = 8080;
   int my_socket = create_socket();
   sockaddr_in address = create_address(kPort);
 
