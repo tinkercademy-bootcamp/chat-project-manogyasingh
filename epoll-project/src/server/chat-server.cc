@@ -59,3 +59,9 @@ void tt::chat::server::Server::handle_accept(int sock) {
   }
   close(sock);
 }
+
+static void set_non_blocking(int sock) {
+  int flags = fcntl(sock, F_GETFL, 0);
+  int err_code = fcntl(sock, F_SETFL, flags | O_NONBLOCK);
+  tt::chat::check_error(err_code<0,"Failed to set server socket to non blocking");
+}
