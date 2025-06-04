@@ -12,6 +12,8 @@
 
 namespace xtc::server {
 
+int wrap_socket_in_epoll(int server_socket_fd);
+
 class ClientDataOnServer {
   std::string username_;
   std::string client_socket_fd_;

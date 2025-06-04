@@ -9,8 +9,8 @@ xtc::server::Server::Server(int port)
     : server_socket_fd_(xtc::net::create_socket()),
       server_address_(xtc::net::create_address(port)),
       port_(port) {
-        opt_bind_listen_epoll();
-      }
+  opt_bind_listen_epoll();
+}
 
 xtc::server::Server::~Server() {
   close(epoll_fd_);
@@ -43,15 +43,19 @@ void xtc::server::Server::opt_bind_listen_epoll() {
   std::cout << "Server listening on port " << port_ << "\n";
 
   // Make epoll fd
-  epoll_fd_ = epoll_create1(0);
-  xtc::check_error(epoll_fd_ < 0, "Couldn't make epoll socket");
+  epoll_fd_ = wrap_socket_in_epoll(server_socket_fd_);
+}
 
-  // Make event struct to add to epoll
+int xtc::server::wrap_socket_in_epoll(int server_socket_fd) {
+  int epoll_fd = epoll_create1(0);
+  xtc::check_error(epoll_fd < 0, "Couldn't start epoll socket.\n");
+
   epoll_event ev;
   ev.events = EPOLLIN | EPOLLET;
-  ev.data.fd = server_socket_fd_;
+  ev.data.fd = server_socket_fd;
 
-  // Add to epoll
-  err_code = epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, server_socket_fd_, &ev);
+  int err_code = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_socket_fd, &ev);
   xtc::check_error(err_code < 0, "Could not add event to epoll");
+
+  return epoll_fd;
 }
