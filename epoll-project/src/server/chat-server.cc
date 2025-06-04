@@ -102,6 +102,13 @@ void tt::chat::server::Server::handle_existing_connection(int sock){
   }
 }
 
+void tt::chat::server::Server::disconnect_client(int sock){
+  SPDLOG_INFO("Client {} Disconnected", sock);
+  remove_from_epoll(sock);
+  close (sock);
+  clients_.erase(sock);
+}
+
 void tt::chat::server::Server::set_non_blocking(int sock) {
   int flags = fcntl(sock, F_GETFL, 0);
   int err_code = fcntl(sock, F_SETFL, flags | O_NONBLOCK);
