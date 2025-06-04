@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <string>
+#include <unordered_map>
 
 namespace tt::chat::server {
 
@@ -18,12 +19,12 @@ public:
   Server(int port);
   ~Server();
   void handle_connections_epoll();
-  void handle_connections();
 
 private:
   int epoll_fd_;
   int server_socket_fd_;
   sockaddr_in address_;
+  std::unordered_map<int, ClientDataOnServer> clients_;
   static const int kMaxEvents = 64;
   static constexpr int kBufferSize = 1024;
 
