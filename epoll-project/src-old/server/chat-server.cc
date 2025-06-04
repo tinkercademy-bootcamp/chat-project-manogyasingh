@@ -1,3 +1,5 @@
+#include "chat-server.h"
+
 #include <spdlog/spdlog.h>
 #include <sys/epoll.h>
 #include <sys/socket.h>
@@ -5,7 +7,6 @@
 
 #include "../net/chat-sockets.h"
 #include "../utils.h"
-#include "chat-server.h"
 
 tt::chat::server::Server::Server(int port)
     : server_socket_fd_(tt::chat::net::create_socket()),
@@ -37,7 +38,8 @@ void tt::chat::server::Server::handle_connections_epoll() {
   while (true) {
     int nfds = epoll_wait(epoll_fd_, events, kMaxEvents, -1);
     for (int i = 0; i < nfds; i++) {
-      if (events[i].data.fd == server_socket_fd_) { // check for new connections
+      if (events[i].data.fd ==
+          server_socket_fd_) {  // check for new connections
         handle_new_connection();
       } else {
         handle_existing_connection(events[i].data.fd);
@@ -94,7 +96,7 @@ void tt::chat::server::Server::handle_existing_connection(int sock) {
   ssize_t count = read(sock, buffer, sizeof(buffer));
   if (count > 0) {
     // forward the message where it's supposed to be
-    send(sock, buffer, count, MSG_NOSIGNAL); // echo for now
+    send(sock, buffer, count, MSG_NOSIGNAL);  // echo for now
     SPDLOG_INFO("Received: {}", buffer);
     send(sock, buffer, count, 0);
     SPDLOG_INFO("Echo message sent");

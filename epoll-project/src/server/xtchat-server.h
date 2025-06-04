@@ -25,11 +25,12 @@ class Server {
   void start();
 
  private:
+  int port_;
   int epoll_fd_;
   int server_socket_fd_;
   sockaddr_in server_address_;
   std::unordered_map<int, ClientDataOnServer> clients_dict_;
-  void set_socket_options(int sock_fd, int opt);
+  void opt_bind_listen_epoll();
 
   static const int kMaxEvents = 64;
   static constexpr int kBufferSize = 1024;
