@@ -71,11 +71,12 @@ void tt::chat::server::Server::handle_accept(int sock) {
   close(sock);
 }
 
-void tt::chat::server::Server::handle_new_connection(){
-  while (true){
+void tt::chat::server::Server::handle_new_connection() {
+  while (true) {
     sockaddr_in client_addr;
-    socklen_t client_len = sizeof (client_addr);
-    int client_fd = accept(server_socket_fd_, (sockaddr *)&client_addr, &client_len);
+    socklen_t client_len = sizeof(client_addr);
+    int client_fd =
+        accept(server_socket_fd_, (sockaddr *)&client_addr, &client_len);
 
     if (client_fd < 0) {
       SPDLOG_ERROR("Accept Failed.");
@@ -88,31 +89,42 @@ void tt::chat::server::Server::handle_new_connection(){
   }
 }
 
-void tt::chat::server::Server::handle_existing_connection(int sock){
+void tt::chat::server::Server::handle_existing_connection(int sock) {
   char buffer[kBufferSize];
-  
-  while (true){
-    ssize_t count = read(sock, buffer, sizeof(buffer));
-    if (count < 0) {
-      disconnect_client(sock); return;
+  ssize_t count = read(sock, buffer, sizeof(buffer));
+  if (count > 0) {
+    // forward the message where it's supposed to be
+    send(sock, buffer, count, MSG_NOSIGNAL); // echo for now
+    if (count > 0) {
+      SPDLOG_INFO("Received: {}", buffer);
+      send(sock, buffer, count, 0);
+      SPDLOG_INFO("Echo message sent");
     }
-    clients_[sock].buffer.append(buffer,count);
-    ClientDataOnServer& client = clients_[sock];
-    size_t posn;
-    while ((posn = client.buffer.find('\n'))!=std::string::npos){
-      std::string message = client.buffer.substr(0,posn);
-      client.buffer.erase(0,posn+1);
-
-      std::string echo = message+"\n";
-      send(sock,echo.c_str(),echo.length(),MSG_NOSIGNAL);
-    }
+  } else if (count == 0) {
+    disconnect_client(sock);
   }
+  // while (true){
+  //   ssize_t count = read(sock, buffer, sizeof(buffer));
+  //   if (count < 0) {
+  //     disconnect_client(sock); return;
+  //   }
+  //   clients_[sock].buffer.append(buffer,count);
+  //   ClientDataOnServer& client = clients_[sock];
+  //   size_t posn;
+  //   while ((posn = client.buffer.find('\n'))!=std::string::npos){
+  //     std::string message = client.buffer.substr(0,posn);
+  //     client.buffer.erase(0,posn+1);
+
+  //     std::string echo = message+"\n";
+  //     send(sock,echo.c_str(),echo.length(),MSG_NOSIGNAL);
+  //   }
+  // }
 }
 
-void tt::chat::server::Server::disconnect_client(int sock){
+void tt::chat::server::Server::disconnect_client(int sock) {
   SPDLOG_INFO("Client {} Disconnected", sock);
   remove_from_epoll(sock);
-  close (sock);
+  close(sock);
   clients_.erase(sock);
 }
 
