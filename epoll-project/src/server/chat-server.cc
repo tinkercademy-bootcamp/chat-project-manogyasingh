@@ -18,12 +18,16 @@ tt::chat::server::Server::Server(int port)
   tt::chat::check_error(err_code < 0, "bind failed\n");
 
   err_code = listen(socket_, 3);
+  setup_epoll();
   check_error(err_code < 0, "listen failed\n");
 
   std::cout << "Server listening on port " << port << "\n";
 }
 
-tt::chat::server::Server::~Server() { close(socket_); }
+tt::chat::server::Server::~Server() {
+  close(socket_);
+  close(epoll_fd_);
+}
 
 void tt::chat::server::Server::handle_connections() {
   socklen_t address_size = sizeof(address_);
