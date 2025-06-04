@@ -20,7 +20,7 @@ private:
   static constexpr int kBufferSize = 1024;
 
   void setup_epoll();
-  void add_to_epoll(int sock, uint32_t event);
+  void add_to_epoll(int sock, uint32_t events);
   void remove_from_epoll(int sock);
   void handle_accept(int sock);
 

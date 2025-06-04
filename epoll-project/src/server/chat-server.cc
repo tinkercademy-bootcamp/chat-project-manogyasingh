@@ -71,3 +71,11 @@ void tt::chat::server::Server::setup_epoll() {
   tt::chat::check_error(epoll_fd_<0, "Couldn't make epoll socket");
   add_to_epoll(socket_, EPOLLIN | EPOLLET);
 }
+
+void tt::chat::server::Server::add_to_epoll(int sock, uint32_t events){
+  epoll_event ev;
+  ev.events = events;
+  ev.data.fd= sock;
+
+  int err_code = epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, sock, &ev);
+}
