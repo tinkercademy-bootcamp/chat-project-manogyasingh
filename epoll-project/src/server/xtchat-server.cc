@@ -1,15 +1,20 @@
 #include "xtchat-server.h"
 
+#include <fcntl.h>
+#include <netinet/in.h>
 #include <spdlog/spdlog.h>
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <iostream>
+
 xtc::server::Server::Server(int port)
     : server_socket_fd_(xtc::net::create_socket()),
       server_address_(xtc::net::create_address(port)),
       port_(port) {
-  opt_bind_listen_epoll();
+  opt_bind_listen();
+  setup_epoll();
 }
 
 xtc::server::Server::~Server() {
@@ -20,7 +25,7 @@ xtc::server::Server::~Server() {
 // the one function to set socket options, address options,
 // bind, start listening on, and add to epoll
 // (the server socket file descriptor)
-void xtc::server::Server::opt_bind_listen_epoll() {
+void xtc::server::Server::opt_bind_listen() {
   int err_code;
 
   // set the socket option to allow reusing address and port
@@ -41,21 +46,33 @@ void xtc::server::Server::opt_bind_listen_epoll() {
   err_code = listen(server_socket_fd_, 5);
   xtc::check_error(err_code < 0, "listen failed\n");
   std::cout << "Server listening on port " << port_ << "\n";
-
-  // Make epoll fd
-  epoll_fd_ = wrap_socket_in_epoll(server_socket_fd_);
 }
 
-int xtc::server::wrap_socket_in_epoll(int server_socket_fd) {
-  int epoll_fd = epoll_create1(0);
-  xtc::check_error(epoll_fd < 0, "Couldn't start epoll socket.\n");
+void xtc::server::Server::setup_epoll() {
+  epoll_fd_ = epoll_create1(0);
+  xtc::check_error(epoll_fd_ < 0, "Couldn't make epoll socket");
+  add_to_epoll(server_socket_fd_, EPOLLIN | EPOLLET);
+}
 
+void xtc::server::Server::add_to_epoll(int sock, uint32_t events) {
   epoll_event ev;
-  ev.events = EPOLLIN | EPOLLET;
-  ev.data.fd = server_socket_fd;
+  ev.events = events;
+  ev.data.fd = sock;
 
-  int err_code = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_socket_fd, &ev);
+  int err_code = epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, sock, &ev);
   xtc::check_error(err_code < 0, "Could not add event to epoll");
+}
 
-  return epoll_fd;
+void xtc::server::Server::remove_from_epoll(int sock) {
+  epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, sock, nullptr);
+}
+
+void xtc::server::Server::set_non_blocking(int sock) {
+  int flags = fcntl(sock, F_GETFL, 0);
+  int err_code = fcntl(sock, F_SETFL, flags | O_NONBLOCK);
+  xtc::check_error(err_code < 0, "Failed to set server socket to non blocking");
+}
+
+void xtc::server::Server::handle_connections(){
+  
 }

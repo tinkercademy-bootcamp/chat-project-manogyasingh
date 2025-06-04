@@ -12,27 +12,23 @@
 
 namespace xtc::server {
 
-int wrap_socket_in_epoll(int server_socket_fd);
-
-class ClientDataOnServer {
-  std::string username_;
-  std::string client_socket_fd_;
-  std::string buffer_;
-};
-
 class Server {
  public:
   Server(int port);
   ~Server();
-  void start();
 
  private:
   int port_;
   int epoll_fd_;
   int server_socket_fd_;
   sockaddr_in server_address_;
-  std::unordered_map<int, ClientDataOnServer> clients_dict_;
-  void opt_bind_listen_epoll();
+
+  void opt_bind_listen();
+  void setup_epoll();
+  void add_to_epoll(int sock, uint32_t events);
+  void remove_from_epoll(int sock);
+  void set_non_blocking(int sock);
+  void handle_connections();
 
   static const int kMaxEvents = 64;
   static constexpr int kBufferSize = 1024;
