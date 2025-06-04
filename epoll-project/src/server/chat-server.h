@@ -11,6 +11,7 @@ class Server {
 public:
   Server(int port);
   ~Server();
+  void handle_connections_epoll();
   void handle_connections();
 
 private:

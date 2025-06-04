@@ -39,6 +39,10 @@ void tt::chat::server::Server::handle_connections() {
   }
 }
 
+void tt::chat::server::Server::handle_connections_epoll(){
+  
+}
+
 void tt::chat::server::Server::set_socket_options(int sock, int opt) {
   using namespace tt::chat;
   auto err_code = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
