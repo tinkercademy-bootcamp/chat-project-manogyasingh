@@ -1,3 +1,4 @@
+#include <sys/epoll.h>
 #include <unistd.h>
 #include <spdlog/spdlog.h>
 
@@ -59,8 +60,14 @@ void tt::chat::server::Server::handle_accept(int sock) {
   close(sock);
 }
 
-static void set_non_blocking(int sock) {
+void tt::chat::server::Server::set_non_blocking(int sock) {
   int flags = fcntl(sock, F_GETFL, 0);
   int err_code = fcntl(sock, F_SETFL, flags | O_NONBLOCK);
   tt::chat::check_error(err_code<0,"Failed to set server socket to non blocking");
+}
+
+void tt::chat::server::Server::setup_epoll() {
+  epoll_fd_ = epoll_create1(0);
+  tt::chat::check_error(epoll_fd_<0, "Couldn't make epoll socket");
+  add_to_epoll(socket_, EPOLLIN | EPOLLET);
 }
