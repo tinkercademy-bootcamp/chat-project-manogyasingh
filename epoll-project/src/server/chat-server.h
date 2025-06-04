@@ -4,8 +4,14 @@
 #include "../utils.h"
 #include <fcntl.h>
 #include <netinet/in.h>
+#include <string>
 
 namespace tt::chat::server {
+
+class ClientDataOnServer{
+  int client_socket_fd_;
+  std::string username;
+};
 
 class Server {
 public:
