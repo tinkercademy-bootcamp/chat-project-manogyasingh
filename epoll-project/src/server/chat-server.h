@@ -9,9 +9,10 @@
 
 namespace tt::chat::server {
 
-class ClientDataOnServer{
+struct ClientDataOnServer{
   int client_socket_fd_;
   std::string username;
+  std::string buffer;
 };
 
 class Server {

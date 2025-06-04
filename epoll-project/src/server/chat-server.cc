@@ -74,6 +74,25 @@ void tt::chat::server::Server::handle_accept(int sock) {
   close(sock);
 }
 
+void tt::chat::server::Server::handle_new_connection(){
+  while (true){
+    sockaddr_in client_addr;
+    socklen_t client_len = sizeof (client_addr);
+    int client_fd = accept(server_socket_fd_, (sockaddr *)&client_addr, &client_len);
+
+    if (client_fd < 0) {
+      SPDLOG_ERROR("Accept Failed.");
+    }
+
+    set_non_blocking(client_fd);
+    add_to_epoll(client_fd, EPOLLIN | EPOLLET);
+    clients_[client_fd] = {client_fd, "", ""};
+    SPDLOG_INFO("New client connected: fd={}", client_fd);
+  }
+}
+
+
+
 void tt::chat::server::Server::set_non_blocking(int sock) {
   int flags = fcntl(sock, F_GETFL, 0);
   int err_code = fcntl(sock, F_SETFL, flags | O_NONBLOCK);
