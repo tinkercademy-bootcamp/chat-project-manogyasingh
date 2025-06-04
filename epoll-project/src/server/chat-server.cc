@@ -95,11 +95,9 @@ void tt::chat::server::Server::handle_existing_connection(int sock) {
   if (count > 0) {
     // forward the message where it's supposed to be
     send(sock, buffer, count, MSG_NOSIGNAL); // echo for now
-    if (count > 0) {
-      SPDLOG_INFO("Received: {}", buffer);
-      send(sock, buffer, count, 0);
-      SPDLOG_INFO("Echo message sent");
-    }
+    SPDLOG_INFO("Received: {}", buffer);
+    send(sock, buffer, count, 0);
+    SPDLOG_INFO("Echo message sent");
   } else if (count == 0) {
     disconnect_client(sock);
   }
