@@ -1,16 +1,3 @@
-TODO
- - Create server and client from scratch
-   - Copy old code if and when needed
-   - Will write extremely carefully
-   - Think twice, write once
-   - Implement the whole mechanism to have the client and server connect
-   - Then for the messages to be properly sent
-   - Then create a bot for AI
-   - Then make a generalised bot library out of it
-   - Finally, make a trading bot
-   - Try for a nice CLI UI instead of a front-end
-
-
 # Creating a Chat Client/Server Using EPOLL
 
 ## Tasks
