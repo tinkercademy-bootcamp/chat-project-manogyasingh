@@ -99,14 +99,14 @@ void Server::handle_new_connection() {
 
   std::string username = "user-" + std::to_string(sock);
 
-  socket_from_username_[username]=sock;
-  username_from_socket_[sock]=username;
+  socket_from_username_[username] = sock;
+  username_from_socket_[sock] = username;
 
   SPDLOG_INFO(
       "New connection from client fd: {}, Assigned temporary username: @{}",
       sock, username);
-  
-      send_to_user(sock,help_text);
+
+  send_to_user(sock, help_text);
 }
 
 void Server::handle_client_data(int sock) {
@@ -114,7 +114,7 @@ void Server::handle_client_data(int sock) {
   ssize_t bytes_read = recv(sock, buffer, kBufferSize - 1, 0);
 
   if (bytes_read <= 0) {
-purge_user(username_from_socket_[sock]);
+    purge_user(username_from_socket_[sock]);
   }
 
   buffer[bytes_read] = '\0';
@@ -130,23 +130,25 @@ purge_user(username_from_socket_[sock]);
 }
 
 void Server::send_to_user(int sock, std ::string payload) {
-  send(sock, payload.c_str(), payload.length(), 0);
-  SPDLOG_INFO("Sent payload to {}", sock);
+  std::string username = username_from_socket_[sock];
+  send_to_user(username,payload);
 }
 
-void Server::send_to_user(std::string username, std ::string payload) {
+void Server::send_to_user(std::string username, std::string payload) {
   int sock = socket_from_username_[username];
-  send(sock, payload.c_str(), payload.length(), 0);
+  const char* cpayload = payload.c_str();
+  size_t cpl_len = payload.length();
+  send(sock, cpayload, cpl_len, 0);
   SPDLOG_INFO("Sent payload to {}", sock);
 }
 
-void Server::purge_user(std::string username){
+void Server::purge_user(std::string username) {
   int sock = socket_from_username_[username];
   socket_from_username_.erase(username);
   username_from_socket_.erase(sock);
   remove_from_epoll(sock);
   close(sock);
-  SPDLOG_INFO("Client @{} with fd: {} disconnected",username, sock);
+  SPDLOG_INFO("Client @{} with fd: {} disconnected", username, sock);
   return;
 }
 void Server::purge_user(int sock) {
