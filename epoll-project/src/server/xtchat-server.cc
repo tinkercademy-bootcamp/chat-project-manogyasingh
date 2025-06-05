@@ -12,8 +12,8 @@
 namespace xtc::server {
 Server::Server(int port)
     : server_socket_fd_(xtc::net::create_socket()),
-      server_address_(xtc::net::create_address(port)),
-      port_(port) {
+      port_(port),
+      server_address_(xtc::net::create_address(port)) {
   opt_bind_listen();
   epoll_fd_ = epoll_create1(0);
   check_error(epoll_fd_ < 0, "Couldn't make epoll socket");
@@ -50,7 +50,6 @@ void Server::opt_bind_listen() {
   xtc::check_error(err_code < 0, "listen failed\n");
   std::cout << "Server listening on port " << port_ << "\n";
 }
-
 
 void Server::add_to_epoll(int sock, uint32_t events) {
   epoll_event ev;
@@ -99,15 +98,17 @@ void Server::handle_new_connection() {
   add_to_epoll(client_socket_fd, EPOLLIN | EPOLLET);
 
   ClientData new_client;
-  new_client.username_ = "user"+std::to_string(client_socket_fd);
-  new_client.client_fd_=client_socket_fd;
+  new_client.username_ = "user-" + std::to_string(client_socket_fd);
+  new_client.socket_ = client_socket_fd;
 
   all_clients_[client_socket_fd] = new_client;
 
-  SPDLOG_INFO("New connection from client fd: {}", client_socket_fd);
+  SPDLOG_INFO(
+      "New connection from client fd: {}, Assigned temporary username: @{}",
+      client_socket_fd, new_client.username_);
 }
 
-void Server::handle_client_data(int client_sock){
+void Server::handle_client_data(int client_sock) {
   char buffer[kBufferSize];
   ssize_t bytes_read = recv(client_sock, buffer, kBufferSize - 1, 0);
 
@@ -122,13 +123,19 @@ void Server::handle_client_data(int client_sock){
   buffer[bytes_read] = '\0';
   spdlog::info("Received from client fd {}: {}", client_sock, buffer);
 
+  //////////////////////////////////
+  //////////////////////////////////
+  //  This is the part where we actually do stuff with their data //
+  //////////////////////////////////
+
   // Echo back to client
-  ssize_t bytes_sent = send(client_sock, buffer, bytes_read, 0);
-  if (bytes_sent < 0) {
-    SPDLOG_ERROR("Failed to send data to client fd {}", client_sock);
-  } else {
-    SPDLOG_INFO("Sent echo back to {}", client_sock);
-  }
+  // send_to_user(client_sock, std::string(buffer));
+}
+
+void Server::send_to_user(ClientData target, std ::string payload) {
+  ssize_t bytes_sent =
+      send(target.socket_, payload.c_str(), payload.length(), 0);
+  SPDLOG_INFO("Sent payload to {}", target.socket_);
 }
 
 }  // namespace xtc::server

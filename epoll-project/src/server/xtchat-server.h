@@ -12,9 +12,9 @@
 
 namespace xtc::server {
 
-struct ClientData{
+struct ClientData {
   std::string username_;
-  std::string client_fd_;
+  int socket_;
 };
 
 class Server {
@@ -22,24 +22,27 @@ class Server {
   Server(int port);
   ~Server();
   void run();
-  
-  private:
+
+ private:
   int port_;
   int epoll_fd_;
   int server_socket_fd_;
   sockaddr_in server_address_;
   std::unordered_map<int, ClientData> all_clients_;
-  
+
   void opt_bind_listen();
   void add_to_epoll(int sock, uint32_t events);
   void remove_from_epoll(int sock);
   void set_non_blocking(int sock);
+  void send_to_user(ClientData client, std::string payload);
 
   static const int kMaxEvents = 64;
   static constexpr int kBufferSize = 1024;
 
   void handle_new_connection();
   void handle_client_data(int client_sock);
+
+  
 };
 }  // namespace xtc::server
 
