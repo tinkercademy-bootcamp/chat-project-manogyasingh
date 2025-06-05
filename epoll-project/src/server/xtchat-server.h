@@ -31,7 +31,6 @@ class Server {
   sockaddr_in server_address_;
   
   void opt_bind_listen();
-  void setup_epoll();
   void add_to_epoll(int sock, uint32_t events);
   void remove_from_epoll(int sock);
   void set_non_blocking(int sock);

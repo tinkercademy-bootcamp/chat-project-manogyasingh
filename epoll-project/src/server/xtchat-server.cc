@@ -15,7 +15,9 @@ Server::Server(int port)
       server_address_(xtc::net::create_address(port)),
       port_(port) {
   opt_bind_listen();
-  setup_epoll();
+  epoll_fd_ = epoll_create1(0);
+  check_error(epoll_fd_ < 0, "Couldn't make epoll socket");
+  add_to_epoll(server_socket_fd_, EPOLLIN | EPOLLET);
 }
 
 Server::~Server() {
@@ -24,7 +26,7 @@ Server::~Server() {
 }
 
 // the one function to set socket options, address options,
-// bind, start listening on, and add to epoll
+// bind, and start listening on
 // (the server socket file descriptor)
 void Server::opt_bind_listen() {
   int err_code;
@@ -49,11 +51,6 @@ void Server::opt_bind_listen() {
   std::cout << "Server listening on port " << port_ << "\n";
 }
 
-void Server::setup_epoll() {
-  epoll_fd_ = epoll_create1(0);
-  xtc::check_error(epoll_fd_ < 0, "Couldn't make epoll socket");
-  add_to_epoll(server_socket_fd_, EPOLLIN | EPOLLET);
-}
 
 void Server::add_to_epoll(int sock, uint32_t events) {
   epoll_event ev;
