@@ -12,10 +12,17 @@
 
 namespace xtc::server {
 
+struct ClientData{
+  std::string username_;
+  std::string client_fd_;
+  std::string buffer_;
+};
+
 class Server {
  public:
   Server(int port);
   ~Server();
+  void run();
 
  private:
   int port_;
@@ -32,6 +39,8 @@ class Server {
 
   static const int kMaxEvents = 64;
   static constexpr int kBufferSize = 1024;
+
+  void handle_new_connection();
 };
 }  // namespace xtc::server
 
