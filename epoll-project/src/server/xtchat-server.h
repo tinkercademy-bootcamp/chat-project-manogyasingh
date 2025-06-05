@@ -42,7 +42,11 @@ class Server {
   void handle_new_connection();
   void handle_client_data(int client_sock);
 
-  
+  std::string help_text =
+      "Usage:\n"
+      "/help                                 - Print this message\n"
+      "/set_username <namelike_string>       - Set your own username\n"
+      "@<target_user> <string>               - Send a message to target_user\n";
 };
 }  // namespace xtc::server
 
