@@ -91,37 +91,34 @@ void Server::run() {
 void Server::handle_new_connection() {
   sockaddr_in client_address;
   socklen_t client_addr_len = sizeof(client_address);
-  int client_socket_fd =
+  int sock =
       accept(server_socket_fd_, (sockaddr *)&client_address, &client_addr_len);
-  check_error(client_socket_fd < 0, "accept error");
-  set_non_blocking(client_socket_fd);
-  add_to_epoll(client_socket_fd, EPOLLIN | EPOLLET);
+  check_error(sock < 0, "accept error");
+  set_non_blocking(sock);
+  add_to_epoll(sock, EPOLLIN | EPOLLET);
 
-  ClientData new_client;
-  new_client.username_ = "user-" + std::to_string(client_socket_fd);
-  new_client.socket_ = client_socket_fd;
+  std::string username = "user-" + std::to_string(sock);
 
-  all_clients_[client_socket_fd] = new_client;
+  socket_from_username_[username]=sock;
+  username_from_socket_[sock]=username;
 
   SPDLOG_INFO(
       "New connection from client fd: {}, Assigned temporary username: @{}",
-      client_socket_fd, new_client.username_);
+      sock, username);
+  
+      send_to_user(sock,help_text);
 }
 
-void Server::handle_client_data(int client_sock) {
+void Server::handle_client_data(int sock) {
   char buffer[kBufferSize];
-  ssize_t bytes_read = recv(client_sock, buffer, kBufferSize - 1, 0);
+  ssize_t bytes_read = recv(sock, buffer, kBufferSize - 1, 0);
 
   if (bytes_read <= 0) {
-    SPDLOG_INFO("Client fd {} disconnected", client_sock);
-    all_clients_.erase(client_sock);
-    remove_from_epoll(client_sock);
-    close(client_sock);
-    return;
+purge_user(username_from_socket_[sock]);
   }
 
   buffer[bytes_read] = '\0';
-  spdlog::info("Received from client fd {}: {}", client_sock, buffer);
+  spdlog::info("Received from client fd {}: {}", sock, buffer);
 
   //////////////////////////////////
   //////////////////////////////////
@@ -129,13 +126,37 @@ void Server::handle_client_data(int client_sock) {
   //////////////////////////////////
 
   // Echo back to client
-  // send_to_user(client_sock, std::string(buffer));
+  send_to_user(sock, std::string(buffer));
 }
 
-void Server::send_to_user(ClientData target, std ::string payload) {
-  ssize_t bytes_sent =
-      send(target.socket_, payload.c_str(), payload.length(), 0);
-  SPDLOG_INFO("Sent payload to {}", target.socket_);
+void Server::send_to_user(int sock, std ::string payload) {
+  send(sock, payload.c_str(), payload.length(), 0);
+  SPDLOG_INFO("Sent payload to {}", sock);
+}
+
+void Server::send_to_user(std::string username, std ::string payload) {
+  int sock = socket_from_username_[username];
+  send(sock, payload.c_str(), payload.length(), 0);
+  SPDLOG_INFO("Sent payload to {}", sock);
+}
+
+void Server::purge_user(std::string username){
+  int sock = socket_from_username_[username];
+  socket_from_username_.erase(username);
+  username_from_socket_.erase(sock);
+  remove_from_epoll(sock);
+  close(sock);
+  SPDLOG_INFO("Client @{} with fd: {} disconnected",username, sock);
+  return;
+}
+void Server::purge_user(int sock) {
+  std::string username = username_from_socket_[sock];
+  socket_from_username_.erase(username);
+  username_from_socket_.erase(sock);
+  remove_from_epoll(sock);
+  close(sock);
+  SPDLOG_INFO("Client @{} with fd: {} disconnected", username, sock);
+  return;
 }
 
 }  // namespace xtc::server
