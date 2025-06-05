@@ -15,7 +15,6 @@ namespace xtc::server {
 struct ClientData{
   std::string username_;
   std::string client_fd_;
-  std::string buffer_;
 };
 
 class Server {
@@ -29,6 +28,7 @@ class Server {
   int epoll_fd_;
   int server_socket_fd_;
   sockaddr_in server_address_;
+  std::unordered_map<int, ClientData> all_clients_;
   
   void opt_bind_listen();
   void add_to_epoll(int sock, uint32_t events);

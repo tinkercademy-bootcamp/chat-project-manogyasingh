@@ -72,12 +72,14 @@ void Server::set_non_blocking(int sock) {
 }
 
 void Server::run() {
+  SPDLOG_INFO("Server started..!");
   epoll_event events[kMaxEvents];
-  while (true) {
-    int num_events = epoll_wait(epoll_fd_, events, kMaxEvents, -1);
-    xtc::check_error(num_events < 0, "epoll_wait error");
 
-    for (int i = 0; i < num_events; i++) {
+  while (true) {
+    int nfds = epoll_wait(epoll_fd_, events, kMaxEvents, -1);
+    xtc::check_error(nfds < 0, "epoll_wait error");
+
+    for (int i = 0; i < nfds; ++i) {
       if (events[i].data.fd == server_socket_fd_) {
         handle_new_connection();
       } else {
@@ -95,8 +97,14 @@ void Server::handle_new_connection() {
   check_error(client_socket_fd < 0, "accept error");
   set_non_blocking(client_socket_fd);
   add_to_epoll(client_socket_fd, EPOLLIN | EPOLLET);
+
+  ClientData new_client;
+  new_client.username_ = "user"+std::to_string(client_socket_fd);
+  new_client.client_fd_=client_socket_fd;
+
+  all_clients_[client_socket_fd] = new_client;
+
   SPDLOG_INFO("New connection from client fd: {}", client_socket_fd);
-  // also add to the db
 }
 
 void Server::handle_client_data(int client_sock){
@@ -105,6 +113,7 @@ void Server::handle_client_data(int client_sock){
 
   if (bytes_read <= 0) {
     SPDLOG_INFO("Client fd {} disconnected", client_sock);
+    all_clients_.erase(client_sock);
     remove_from_epoll(client_sock);
     close(client_sock);
     return;
