@@ -73,6 +73,29 @@ void xtc::server::Server::set_non_blocking(int sock) {
   xtc::check_error(err_code < 0, "Failed to set server socket to non blocking");
 }
 
-void xtc::server::Server::handle_connections(){
-  
+void xtc::server::Server::handle_connections() {
+  epoll_event events[kMaxEvents];
+  while (true) {
+    int num_events = epoll_wait(epoll_fd_, events, kMaxEvents, -1);
+    xtc::check_error(num_events < 0, "epoll_wait error");
+
+    for (int i = 0; i < num_events; i++) {
+      if (events[i].data.fd == server_socket_fd_) {
+        // new connection
+        sockaddr_in client_address;
+        socklen_t client_addr_len = sizeof(client_address);
+        int client_socket_fd = accept(
+            server_socket_fd_, (sockaddr *)&client_address, &client_addr_len);
+        xtc::check_error(client_socket_fd < 0, "accept error");
+
+        set_non_blocking(client_socket_fd);
+        add_to_epoll(client_socket_fd,
+                     EPOLLIN | EPOLLET);  // Edge-triggered for new data
+
+        spdlog::info("New connection from client fd: {}", client_socket_fd);
+      } else {
+        // existing connection
+      }
+    }
+  }
 }
