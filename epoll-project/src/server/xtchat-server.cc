@@ -74,7 +74,7 @@ void Server::set_non_blocking(int sock) {
   xtc::check_error(err_code < 0, "Failed to set server socket to non blocking");
 }
 
-void Server::handle_connections() {
+void Server::run() {
   epoll_event events[kMaxEvents];
   while (true) {
     int num_events = epoll_wait(epoll_fd_, events, kMaxEvents, -1);
@@ -84,7 +84,7 @@ void Server::handle_connections() {
       if (events[i].data.fd == server_socket_fd_) {
         handle_new_connection();
       } else {
-        // existing connection
+        handle_client_data(events[i].data.fd);
       }
     }
   }
@@ -98,8 +98,31 @@ void Server::handle_new_connection() {
   check_error(client_socket_fd < 0, "accept error");
   set_non_blocking(client_socket_fd);
   add_to_epoll(client_socket_fd, EPOLLIN | EPOLLET);
-  spdlog::info("New connection from client fd: {}", client_socket_fd);
+  SPDLOG_INFO("New connection from client fd: {}", client_socket_fd);
   // also add to the db
+}
+
+void Server::handle_client_data(int client_sock){
+  char buffer[kBufferSize];
+  ssize_t bytes_read = recv(client_sock, buffer, kBufferSize - 1, 0);
+
+  if (bytes_read <= 0) {
+    SPDLOG_INFO("Client fd {} disconnected", client_sock);
+    remove_from_epoll(client_sock);
+    close(client_sock);
+    return;
+  }
+
+  buffer[bytes_read] = '\0';
+  spdlog::info("Received from client fd {}: {}", client_sock, buffer);
+
+  // Echo back to client
+  ssize_t bytes_sent = send(client_sock, buffer, bytes_read, 0);
+  if (bytes_sent < 0) {
+    SPDLOG_ERROR("Failed to send data to client fd {}", client_sock);
+  } else {
+    SPDLOG_INFO("Sent echo back to {}", client_sock);
+  }
 }
 
 }  // namespace xtc::server
