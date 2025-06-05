@@ -3,13 +3,14 @@
 #include "../common/net/socket_helper.h"
 
 namespace xtc::client {
-Client::Client(std::string server_address, int port) {
-  server_address_ = create_server_address(server_address, port);
-  socket_ = net::create_socket();
-  connect_to_server();
-};
-Client::~Client() {
 
+Client::Client(std::string server_address, int port) {
+  socket_ = net::create_socket();
+  connect_to_server(create_server_address(server_address, port));
+};
+
+Client::~Client() {
+  close(socket_);
 };
 
 sockaddr_in Client::create_server_address(const std::string &server_ip,
@@ -20,22 +21,24 @@ sockaddr_in Client::create_server_address(const std::string &server_ip,
   return address;
 }
 
-void Client::connect_to_server() {
+void Client::connect_to_server(sockaddr_in server_address) {
   auto err_code =
-      connect(socket_, (sockaddr *)&server_address_, sizeof(server_address_));
+      connect(socket_, (sockaddr *)&server_address, sizeof(server_address));
   check_error(err_code < 0, "Connection Failed.\n");
 };
 
-std::string Client::send_message(std::string target_username,
-                                 std::string message) {
+void Client::send_message(std::string payload) {
+  send(socket_, payload.c_str(), payload.size(), 0);
+  std::cout << "Sent: " << payload << "\n";
+}
+
+void Client::check_messages() {
+  // Receive response from the server
+  // very very simple for now, literally just prints everything in the buffer
+  // will add multithreading and some nice formatting later
   const int kBufferSize = 1024;
   char recv_buffer[kBufferSize] = {0};
 
-  // Send the message to the server
-  send(socket_, message.c_str(), message.size(), 0);
-  std::cout << "Sent: " << message << "\n";
-
-  // Receive response from the server
   ssize_t read_size = read(socket_, recv_buffer, kBufferSize);
   check_error(read_size < 0, "Read error.\n");
   if (read_size > 0) {
@@ -43,6 +46,6 @@ std::string Client::send_message(std::string target_username,
   } else if (read_size == 0) {
     std::cout << "Server closed connection.\n";
   }
-  return std::string(recv_buffer);
 }
+
 }  // namespace xtc::client

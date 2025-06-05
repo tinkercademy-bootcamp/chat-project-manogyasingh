@@ -13,14 +13,13 @@ class Client {
  public:
   Client(std::string server_address, int port);
   ~Client();
-  std::string send_message(std::string target_username, std::string message);
+  void send_message(std::string payload);
+  void check_messages();
 
  private:
+  static constexpr int kBufferSize = 1024;
   int socket_;
-  std::string username_;
-  sockaddr_in server_address_;
-  void set_username();
-  void connect_to_server();
+  void connect_to_server(sockaddr_in server_address);
   static sockaddr_in create_server_address(const std::string &server_ip,
                                            int port);
 };

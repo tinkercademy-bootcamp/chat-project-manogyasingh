@@ -3,12 +3,6 @@
 
 #include "client/xtchat-client.h"
 
-void get_message(std::string &target_user, std::string &message) {
-  std::cout << "Send to @";
-  std::cin >> target_user;
-  std::cout << "Enter your message: ";
-  std::cin >> message;
-}
 
 int main() {
   const int kPort = 8080;
@@ -16,12 +10,12 @@ int main() {
 
   xtc::client::Client client{kServerAddress, kPort};
 
-  std::string target_user = "";
-  std::string message = "";
+  std::string payload = "";
 
   while (true) {
-    get_message(target_user, message);
-    std::string response = client.send_message(target_user, message);
+    std::cin >> payload;
+    client.send_message(payload);
+    client.check_messages();
   }
 
   return 0;
