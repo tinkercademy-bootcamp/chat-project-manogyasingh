@@ -14,7 +14,7 @@ struct Command {
   std::string arg2;
 };
 
-Command parse_line (std::string_view line);
+std::optional<Command> parse_line (std::string_view line);
 
 }  // namespace xtc::command
 #endif
