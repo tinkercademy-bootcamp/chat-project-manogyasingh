@@ -1,19 +1,20 @@
 #include "xtchat-server.h"
-#include "../common/command/command.h"
 
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <spdlog/spdlog.h>
-#include <string_view>
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
 #include <iostream>
+#include <string_view>
+
+#include "../common/command/command.h"
 
 namespace xtc::server {
-  using xtc::command::Command;
-  using xtc::command::parse_line;
+using xtc::command::Command;
+using xtc::command::parse_line;
 
 Server::Server(int port)
     : server_socket_fd_(xtc::net::create_socket()),
@@ -46,7 +47,7 @@ void Server::opt_bind_listen() {
   server_address_.sin_addr.s_addr = INADDR_ANY;
 
   // bind socket to the address
-  err_code = bind(server_socket_fd_, (sockaddr *)&server_address_,
+  err_code = bind(server_socket_fd_, (sockaddr*)&server_address_,
                   sizeof(server_address_));
   xtc::check_error(err_code < 0, "bind failed\n");
 
@@ -97,7 +98,7 @@ void Server::handle_new_connection() {
   sockaddr_in client_address;
   socklen_t client_addr_len = sizeof(client_address);
   int sock =
-      accept(server_socket_fd_, (sockaddr *)&client_address, &client_addr_len);
+      accept(server_socket_fd_, (sockaddr*)&client_address, &client_addr_len);
   check_error(sock < 0, "accept error");
   set_non_blocking(sock);
   add_to_epoll(sock, EPOLLIN | EPOLLET);
@@ -125,20 +126,34 @@ void Server::handle_client_data(int sock) {
   buffer[bytes_read] = '\0';
   spdlog::info("Received from client fd {}: {}", sock, buffer);
 
-  std::string_view line (buffer,static_cast<size_t>(bytes_read));
+  std::string_view line(buffer, static_cast<size_t>(bytes_read));
 
-  if (auto cmd = parse_line (line)){
-    handle_command (*cmd,sock);
+  if (auto cmd = parse_line(line)) {
+    handle_command(*cmd, sock);
     return;
   }
-  send_to_user(sock, help_text);
+  //send_to_user(sock, help_text);
 }
 
 void Server::handle_command(const Command& cmd, int sock) {
   switch (cmd.cmd) {
-    case command::CommandType::Help:
+    case command::CommandType::Help: {
       send_to_user(sock, help_text);
       break;
+    }
+
+    case command::CommandType::Send: {
+      const std::string& target = cmd.arg1;
+      const std::string& message = cmd.arg2;
+
+      if (!socket_from_username_.contains(target)) {
+        send_to_user(sock, "No such user @" + target + "\n");
+        return;
+      }
+      const std::string& from = username_from_socket_[sock];
+      send_to_user(target, "@" + from + ": " + message + '\n');
+      break;
+    }
   }
 }
 
@@ -149,7 +164,7 @@ void Server::send_to_user(int sock, std ::string payload) {
 
 void Server::send_to_user(std::string username, std::string payload) {
   int sock = socket_from_username_[username];
-  const char *cpayload = payload.c_str();
+  const char* cpayload = payload.c_str();
   size_t cpl_len = payload.length();
   send(sock, cpayload, cpl_len, 0);
   SPDLOG_INFO("Sent payload to {}", sock);
