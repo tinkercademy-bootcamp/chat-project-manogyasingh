@@ -3,7 +3,6 @@
 #include <cctype>
 #include <string_view>
 
-
 namespace {
 using std::string_view;
 string_view ltrim(string_view s) {
@@ -23,8 +22,23 @@ string_view token(string_view& s) {
 
 namespace xtc::command {
 std::optional<Command> parse_line(std::string_view line) {
+  line = ltrim(line);
   if (line.empty() || line.front() != '/') {
     return std::nullopt;
   }
+
+  const auto cmd = token(line);
+
+  if (cmd == "/help") {
+    return Command{Cmd::Help, {}, {}};
+  }
+
+  if (cmd == "/set_username") {
+    const auto name = token(line);
+    if (name.empty()) return std::nullopt;
+    return Command{Cmd::SetUsername, std::string{name}, {}};
+  }
+
+  return std::nullopt;
 }
 }  // namespace xtc::command
