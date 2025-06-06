@@ -1,4 +1,5 @@
 #include "xtchat-server.h"
+#include "../common/command/command.h"
 
 #include <fcntl.h>
 #include <netinet/in.h>
@@ -10,6 +11,7 @@
 #include <iostream>
 
 namespace xtc::server {
+
 Server::Server(int port)
     : server_socket_fd_(xtc::net::create_socket()),
       port_(port),
