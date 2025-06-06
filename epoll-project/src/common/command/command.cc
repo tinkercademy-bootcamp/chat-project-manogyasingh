@@ -39,6 +39,19 @@ std::optional<Command> parse_line(std::string_view line) {
     return Command{Cmd::SetUsername, std::string{name}, {}};
   }
 
+  if (cmd == "/send") {
+    const auto target = token(line);
+
+    if (target.size() < 2 || target.front() != '@') {
+      return std::nullopt;
+    }
+    line = ltrim(line);
+    if (line.empty()) {
+      return std::nullopt;
+    }
+    return Command{Cmd::Send, std::string{target.substr(1)}, std::string{line}};
+  }
+
   return std::nullopt;
 }
 }  // namespace xtc::command
