@@ -1,0 +1,1 @@
+{"name":"Local: chat-server","url":"/home/manogya/Desktop/chat-project-manogyasingh/epoll-project/src-old/server/chat-server.cc","tests":[{"id":1749064409227,"input":"","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/manogya/Desktop/chat-project-manogyasingh/epoll-project/src-old/server/chat-server.cc","group":"local","local":true}
