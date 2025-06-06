@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <spdlog/spdlog.h>
+#include <string_view>
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -11,6 +12,8 @@
 #include <iostream>
 
 namespace xtc::server {
+  using xtc::command::Command;
+  using xtc::command::parse_line;
 
 Server::Server(int port)
     : server_socket_fd_(xtc::net::create_socket()),
@@ -122,17 +125,13 @@ void Server::handle_client_data(int sock) {
   buffer[bytes_read] = '\0';
   spdlog::info("Received from client fd {}: {}", sock, buffer);
 
-  std::string payload(buffer,bytes_read);
+  std::string_view line (buffer,static_cast<size_t>(bytes_read));
 
-  
-
-  //////////////////////////////////
-  //////////////////////////////////
-  //  This is the part where we actually do stuff with their data //
-  //////////////////////////////////
-
-  // Echo back to client
-  send_to_user(sock, std::string(buffer));
+  if (auto cmd = parse_line (line)){
+    handle_command (*cmd,sock);
+    return;
+  }
+  send_to_user(sock, help_text);
 }
 
 void Server::send_to_user(int sock, std ::string payload) {

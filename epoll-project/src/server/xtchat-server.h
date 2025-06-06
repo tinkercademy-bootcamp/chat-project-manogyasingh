@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "../common/command/command.h"
 #include "../common/error_handling/error_handling.h"
 #include "../common/net/socket_helper.h"
 
@@ -34,7 +35,7 @@ class Server {
   void set_non_blocking(int sock);
 
   // overloaded send function to send by
-  // either username of socket
+  // either username or socket
   void send_to_user(std::string username, std::string payload);
   void send_to_user(int sock, std::string payload);
   void purge_user(std::string username);
@@ -46,13 +47,14 @@ class Server {
   void handle_new_connection();
   void handle_client_data(int sock);
 
-  //void handle_command(const Command& cmd, int sock);
+  void handle_command(const xtc::command::Command& cmd, int sock);
 
   std::string help_text =
       "Usage:\n"
       "/help                                 - Print this message\n"
       "/set_username <namelike_string>       - Set your own username\n"
-      "/send @<target_user> <string>               - Send a message to target_user\n";
+      "/send @<target_user> <string>               - Send a message to "
+      "target_user\n";
 };
 }  // namespace xtc::server
 
