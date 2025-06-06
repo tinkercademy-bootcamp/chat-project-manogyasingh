@@ -27,19 +27,19 @@ std::optional<Command> parse_line(std::string_view line) {
     return std::nullopt;
   }
 
-  const auto cmd = token(line);
+  const auto thiscommand = token(line);
 
-  if (cmd == "/help") {
-    return Command{Cmd::Help, {}, {}};
+  if (thiscommand == "/help") {
+    return Command{CommandType::Help, {}, {}};
   }
 
-  if (cmd == "/set_username") {
+  if (thiscommand == "/set_username") {
     const auto name = token(line);
     if (name.empty()) return std::nullopt;
-    return Command{Cmd::SetUsername, std::string{name}, {}};
+    return Command{CommandType::SetUsername, std::string{name}, {}};
   }
 
-  if (cmd == "/send") {
+  if (thiscommand == "/send") {
     const auto target = token(line);
 
     if (target.size() < 2 || target.front() != '@') {
@@ -49,7 +49,7 @@ std::optional<Command> parse_line(std::string_view line) {
     if (line.empty()) {
       return std::nullopt;
     }
-    return Command{Cmd::Send, std::string{target.substr(1)}, std::string{line}};
+    return Command{CommandType::Send, std::string{target.substr(1)}, std::string{line}};
   }
 
   return std::nullopt;

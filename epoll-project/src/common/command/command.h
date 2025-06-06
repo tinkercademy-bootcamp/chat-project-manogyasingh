@@ -7,9 +7,9 @@
 
 namespace xtc::command {
 
-enum class Cmd { Help, SetUsername, Send };
+enum class CommandType { Help, SetUsername, Send };
 struct Command {
-  Cmd cmd;
+  CommandType cmd;
   std::string arg1;
   std::string arg2;
 };

@@ -134,6 +134,14 @@ void Server::handle_client_data(int sock) {
   send_to_user(sock, help_text);
 }
 
+void Server::handle_command(const Command& cmd, int sock) {
+  switch (cmd.cmd) {
+    case command::CommandType::Help:
+      send_to_user(sock, help_text);
+      break;
+  }
+}
+
 void Server::send_to_user(int sock, std ::string payload) {
   std::string username = username_from_socket_[sock];
   send_to_user(username, payload);
