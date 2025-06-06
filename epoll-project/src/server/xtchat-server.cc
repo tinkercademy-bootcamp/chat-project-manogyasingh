@@ -120,6 +120,10 @@ void Server::handle_client_data(int sock) {
   buffer[bytes_read] = '\0';
   spdlog::info("Received from client fd {}: {}", sock, buffer);
 
+  std::string payload(buffer,bytes_read);
+
+  
+
   //////////////////////////////////
   //////////////////////////////////
   //  This is the part where we actually do stuff with their data //
@@ -131,12 +135,12 @@ void Server::handle_client_data(int sock) {
 
 void Server::send_to_user(int sock, std ::string payload) {
   std::string username = username_from_socket_[sock];
-  send_to_user(username,payload);
+  send_to_user(username, payload);
 }
 
 void Server::send_to_user(std::string username, std::string payload) {
   int sock = socket_from_username_[username];
-  const char* cpayload = payload.c_str();
+  const char *cpayload = payload.c_str();
   size_t cpl_len = payload.length();
   send(sock, cpayload, cpl_len, 0);
   SPDLOG_INFO("Sent payload to {}", sock);

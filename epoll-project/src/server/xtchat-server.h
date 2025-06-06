@@ -24,7 +24,7 @@ class Server {
   int server_socket_fd_;
   sockaddr_in server_address_;
 
-  //emulate a bidirectional map
+  // emulate a bidirectional map
   std::unordered_map<int, std::string> username_from_socket_;
   std::unordered_map<std::string, int> socket_from_username_;
 
@@ -46,11 +46,13 @@ class Server {
   void handle_new_connection();
   void handle_client_data(int sock);
 
+  //void handle_command(const Command& cmd, int sock);
+
   std::string help_text =
       "Usage:\n"
       "/help                                 - Print this message\n"
       "/set_username <namelike_string>       - Set your own username\n"
-      "@<target_user> <string>               - Send a message to target_user\n";
+      "/send @<target_user> <string>               - Send a message to target_user\n";
 };
 }  // namespace xtc::server
 
