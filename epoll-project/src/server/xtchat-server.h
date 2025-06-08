@@ -34,6 +34,7 @@ class Server {
   void add_to_epoll(int sock, uint32_t events);
   void remove_from_epoll(int sock);
   void set_non_blocking(int sock);
+  
 
   // overloaded send function to send by
   // either username or socket
