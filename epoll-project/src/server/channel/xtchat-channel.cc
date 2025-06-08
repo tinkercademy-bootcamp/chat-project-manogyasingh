@@ -1,6 +1,5 @@
 #include "xtchat-channel.h"
 #include <string>
-#include <unordered_map>
 #include <unordered_set>
 #include <spdlog/spdlog.h>
 #include <sys/socket.h>
@@ -15,23 +14,32 @@ bool Channel::addMember(const std::string& username) {
     return members_.insert(username).second;
 }
 
-void Channel::sendMessageToAll(
-    const std::string& message,
-    const std::unordered_map<std::string, int>& socketMap) {
-  for (const auto& member : members_) {
-    auto it = socketMap.find(member);
-    if (it != socketMap.end()) {
-    int sockfd = it->second;
-    send_to_user(sockfd, message);
-    }
-  }
+bool Channel::removeMember(const std::string& username) {
+    return members_.erase(username) > 0;
 }
 
-void Channel::send_to_user(int sock, std::string payload) {
-  const char* cpayload = payload.c_str();
-  size_t cpl_len = payload.length();
-  send(sock, cpayload, cpl_len, 0);
-  SPDLOG_INFO("Sent payload to {}", sock);
+bool Channel::isMember(const std::string& username) const {
+    return members_.find(username) != members_.end();
+}
+
+bool Channel::transferOwnership(const std::string& newOwner) {
+    if (isMember(newOwner)) {
+        owner_ = newOwner;
+        return true;
+    }
+    return false;
+}
+
+const std::unordered_set<std::string>& Channel::getMembers() const {
+    return members_;
+}
+
+const std::string& Channel::getName() const {
+    return name_;
+}
+
+const std::string& Channel::getOwner() const {
+    return owner_;
 }
 
 };  // namespace xtc::server

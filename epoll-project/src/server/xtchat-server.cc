@@ -196,12 +196,43 @@ void Server::handle_command(const Command& cmd, int sock) {
       }
       break;
     }
+    case command::CommandType::SendChannel: {
+      const std::string& channel_name = cmd.arg1;
+      const std::string& message = cmd.arg2;
+      const std::string& from = username_from_socket_[sock];
+      if (!channels_.contains(channel_name)) {
+        send_to_user(sock, "No such channel #" + channel_name + "\n");
+        return;
+      }
+      auto& channel = channels_[channel_name];
+      if (!channel.isMember(from)) {
+        send_to_user(sock, "You are not a member of #" + channel_name + "\n");
+        return;
+      }
+      send_to_channel(channel_name, from, message);
+      break;
+    }
   }
 }
 
 void Server::send_to_user(int sock, std::string payload) {
   std::string username = username_from_socket_[sock];
   send_to_user(username, std::move(payload));
+}
+
+void Server::send_to_channel(const std::string& channel_name,
+               const std::string& source_user,
+               const std::string& payload) {
+  if (!channels_.contains(channel_name)) {
+  send_to_user(source_user, "No such channel #" + channel_name + "\n");
+  return;
+  }
+  auto& channel = channels_[channel_name];
+  for (const auto& member : channel.getMembers()) {
+  if (member != source_user) {
+    send_to_user(member, "@" + source_user + " in #" + channel_name + ": " + payload + '\n');
+  }
+  }
 }
 
 void Server::send_to_user(std::string username, std::string payload) {

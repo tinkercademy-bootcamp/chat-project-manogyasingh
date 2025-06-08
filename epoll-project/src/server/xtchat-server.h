@@ -10,6 +10,7 @@
 #include "../common/command/command.h"
 #include "../common/error_handling/error_handling.h"
 #include "../common/net/socket_helper.h"
+#include "channel/xtchat-channel.h"
 
 namespace xtc::server {
 
@@ -29,17 +30,20 @@ class Server {
   std::unordered_map<int, std::string> username_from_socket_;
   std::unordered_map<std::string, int> socket_from_username_;
   std::unordered_map<int, std::string> client_read_buffers_;
+  std::unordered_map<std::string, xtc::server::Channel> channels_;
 
   void opt_bind_listen();
   void add_to_epoll(int sock, uint32_t events);
   void remove_from_epoll(int sock);
   void set_non_blocking(int sock);
-  
 
   // overloaded send function to send by
   // either username or socket
   void send_to_user(std::string username, std::string payload);
   void send_to_user(int sock, std::string payload);
+  void send_to_channel(const std::string& channel_name,
+                       const std::string& source_user,
+                       const std::string& payload);
   void purge_user(std::string username);
   void purge_user(int sock);
 

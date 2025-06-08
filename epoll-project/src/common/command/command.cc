@@ -51,6 +51,58 @@ std::optional<Command> parse_line(std::string_view line) {
     }
     return Command{CommandType::Send, std::string{target.substr(1)}, std::string{line}};
   }
+  if (thiscommand == "/send_channel") {
+    const auto channel = token(line);
+
+    if (channel.size() < 2 || channel.front() != '#') {
+      return std::nullopt;
+    }
+    line = ltrim(line);
+    if (line.empty()) {
+      return std::nullopt;
+    }
+    return Command{CommandType::SendChannel, std::string{channel.substr(1)}, std::string{line}};
+  }
+
+  if (thiscommand == "/join_channel") {
+    const auto channel = token(line);
+
+    if (channel.size() < 2 || channel.front() != '#') {
+      return std::nullopt;
+    }
+    return Command{CommandType::JoinChannel, std::string{channel.substr(1)}, {}};
+  }
+  if (thiscommand == "/leave_channel") {
+    const auto channel = token(line);
+
+    if (channel.size() < 2 || channel.front() != '#') {
+      return std::nullopt;
+    }
+    return Command{CommandType::LeaveChannel, std::string{channel.substr(1)}, {}};
+  }
+  if (thiscommand == "/transfer_channel_ownership") {
+    const auto channel = token(line);
+    const auto target = token(line);
+
+    if (channel.size() < 2 || channel.front() != '#' || target.size() < 2 || target.front() != '@') {
+      return std::nullopt;
+    }
+    return Command{CommandType::TransferChannelOwnership, std::string{channel.substr(1)}, std::string{target.substr(1)}};
+  }
+  if (thiscommand == "/delete_channel") {
+    const auto channel = token(line);
+
+    if (channel.size() < 2 || channel.front() != '#') {
+      return std::nullopt;
+    }
+    return Command{CommandType::DeleteChannel, std::string{channel.substr(1)}, {}};
+  }
+  if (thiscommand == "/list_joined_channels") {
+    return Command{CommandType::ListJoinedChannels, {}, {}};
+  }
+  if (thiscommand == "/list_all_channels") {
+    return Command{CommandType::ListAllChannels, {}, {}};
+  }
 
   return std::nullopt;
 }

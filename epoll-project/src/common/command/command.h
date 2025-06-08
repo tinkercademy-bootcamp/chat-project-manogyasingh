@@ -7,7 +7,7 @@
 
 namespace xtc::command {
 
-enum class CommandType { Help, SetUsername, Send };
+enum class CommandType { Help, SetUsername, Send, SendChannel, JoinChannel, LeaveChannel, TransferChannelOwnership, DeleteChannel, ListJoinedChannels, ListAllChannels };
 struct Command {
   CommandType cmd;
   std::string arg1;

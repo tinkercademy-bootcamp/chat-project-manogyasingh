@@ -1,0 +1,1 @@
+This basically just parses the arguments. The actual functional logic is mostly in the server files.
