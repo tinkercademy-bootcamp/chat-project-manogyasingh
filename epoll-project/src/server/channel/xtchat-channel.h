@@ -13,9 +13,6 @@ class Channel {
   // create a channel with given name and make the creator owner
   Channel(std::string name, std::string owner);
 
-  const std::string& getName() const;
-  const std::string& getOwner() const;
-
   ///////////////////////
   // membership//////////
   //////////////////////

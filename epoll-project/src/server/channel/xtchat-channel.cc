@@ -5,9 +5,14 @@
 #include <unordered_set>
 #include <vector>
 
-namespace xtc::server{
+namespace xtc::server {
 Channel::Channel(std::string name, std::string owner)
-        : name_(std::move(name)), owner_(std::move(owner)) {
-      members_.insert(owner_);
-    }
-};
+    : name_(std::move(name)), owner_(std::move(owner)) {
+  members_.insert(owner_);
+}
+
+bool Channel::addMember(const std::string& username) {
+    return members_.insert(username).second;
+}
+
+};  // namespace xtc::server
