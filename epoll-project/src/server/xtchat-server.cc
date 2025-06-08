@@ -182,9 +182,20 @@ void Server::handle_command(const Command& cmd, int sock) {
       send_to_user(target, "@" + from + ": " + message + '\n');
       break;
     }
-    case command::CommandType::SetUsername:
-      send_to_user(sock, "Set username not implemented yet\n");
+    case command::CommandType::SetUsername: {
+      const std::string& new_name = cmd.arg1;
+      if (socket_from_username_.contains(new_name)) {
+      send_to_user(sock, "Username @" + new_name + " is already taken\n");
+      } else {
+      auto old_name = username_from_socket_[sock];
+      socket_from_username_.erase(old_name);
+      username_from_socket_[sock] = new_name;
+      socket_from_username_[new_name] = sock;
+      send_to_user(sock, "Username changed to @" + new_name + "\n");
+      SPDLOG_INFO("Client fd {} changed username @{} -> @{}", sock, old_name, new_name);
+      }
       break;
+    }
   }
 }
 
