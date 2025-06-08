@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <cerrno>
 #include <iostream>
 #include <string_view>
 
@@ -20,6 +21,7 @@ Server::Server(int port)
     : server_socket_fd_(xtc::net::create_socket()),
       port_(port),
       server_address_(xtc::net::create_address(port)) {
+  set_non_blocking(server_socket_fd_);
   opt_bind_listen();
   epoll_fd_ = epoll_create1(0);
   check_error(epoll_fd_ < 0, "Couldn't make epoll socket");
@@ -95,44 +97,56 @@ void Server::run() {
 }
 
 void Server::handle_new_connection() {
-  sockaddr_in client_address;
-  socklen_t client_addr_len = sizeof(client_address);
-  int sock =
-      accept(server_socket_fd_, (sockaddr*)&client_address, &client_addr_len);
-  check_error(sock < 0, "accept error");
-  set_non_blocking(sock);
-  add_to_epoll(sock, EPOLLIN | EPOLLET);
+  while (true) {
+    sockaddr_in client_address;
+    socklen_t client_addr_len = sizeof(client_address);
+    int sock =
+        accept(server_socket_fd_, (sockaddr*)&client_address, &client_addr_len);
+    if (sock < 0) {
+      if (errno == EAGAIN || errno == EWOULDBLOCK) break;
+      check_error(true, "accept error");
+    }
+    set_non_blocking(sock);
+    add_to_epoll(sock, EPOLLIN | EPOLLET);
+    std::string username = "user-" + std::to_string(sock);
 
-  std::string username = "user-" + std::to_string(sock);
+    socket_from_username_[username] = sock;
+    username_from_socket_[sock] = username;
 
-  socket_from_username_[username] = sock;
-  username_from_socket_[sock] = username;
+    SPDLOG_INFO(
+        "New connection from client fd: {}, Assigned temporary username: @{}",
+        sock, username);
 
-  SPDLOG_INFO(
-      "New connection from client fd: {}, Assigned temporary username: @{}",
-      sock, username);
-
-  send_to_user(sock, help_text);
+    send_to_user(sock, help_text);
+  }
 }
 
 void Server::handle_client_data(int sock) {
   char buffer[kBufferSize];
-  ssize_t bytes_read = recv(sock, buffer, kBufferSize - 1, 0);
+  while (true) {
+    ssize_t bytes_read = recv(sock, buffer, kBufferSize - 1, 0);
+    if (bytes_read == 0) {
+      purge_user(sock);
+      return;
+    }
+    if (bytes_read < 0) {
+      if (errno == EAGAIN || errno == EWOULDBLOCK) {
+        break;
+      }
+      purge_user(sock);
+      return;
+    }
 
-  if (bytes_read <= 0) {
-    purge_user(username_from_socket_[sock]);
+    buffer[bytes_read] = '\0';
+    spdlog::info("Received from client fd {}: {}", sock, buffer);
+
+    std::string_view line(buffer, static_cast<size_t>(bytes_read));
+
+    if (auto cmd = parse_line(line)) {
+      handle_command(*cmd, sock);
+      return;
+    }
   }
-
-  buffer[bytes_read] = '\0';
-  spdlog::info("Received from client fd {}: {}", sock, buffer);
-
-  std::string_view line(buffer, static_cast<size_t>(bytes_read));
-
-  if (auto cmd = parse_line(line)) {
-    handle_command(*cmd, sock);
-    return;
-  }
-  //send_to_user(sock, help_text);
 }
 
 void Server::handle_command(const Command& cmd, int sock) {
@@ -152,6 +166,10 @@ void Server::handle_command(const Command& cmd, int sock) {
       }
       const std::string& from = username_from_socket_[sock];
       send_to_user(target, "@" + from + ": " + message + '\n');
+      break;
+    }
+    case command::CommandType::SetUsername: {
+      send_to_user(sock, "Set username not implemented yet\n");
       break;
     }
   }

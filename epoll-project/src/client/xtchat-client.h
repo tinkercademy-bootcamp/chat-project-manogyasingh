@@ -13,12 +13,12 @@ class Client {
  public:
   Client(std::string server_address, int port);
   ~Client();
+  int socket_;
   void send_message(std::string payload);
   void check_messages();
 
  private:
   static constexpr int kBufferSize = 1024;
-  int socket_;
   void connect_to_server(sockaddr_in server_address);
   static sockaddr_in create_server_address(const std::string &server_ip,
                                            int port);

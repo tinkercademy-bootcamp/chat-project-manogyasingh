@@ -1,5 +1,10 @@
 #include "xtchat-client.h"
 
+#include <arpa/inet.h>
+#include <unistd.h>
+
+#include <iostream>
+
 #include "../common/net/socket_helper.h"
 
 namespace xtc::client {
@@ -9,9 +14,7 @@ Client::Client(std::string server_address, int port) {
   connect_to_server(create_server_address(server_address, port));
 };
 
-Client::~Client() {
-  close(socket_);
-};
+Client::~Client() { close(socket_); };
 
 sockaddr_in Client::create_server_address(const std::string &server_ip,
                                           int port) {
@@ -28,8 +31,12 @@ void Client::connect_to_server(sockaddr_in server_address) {
 };
 
 void Client::send_message(std::string payload) {
-  send(socket_, payload.c_str(), payload.size(), 0);
-  std::cout << "Sent: " << payload << "\n";
+  if (payload.empty() || payload.back() != '\n') {
+    payload.push_back('\n');
+  }
+  ssize_t bytes_sent = send(socket_, payload.c_str(), payload.size(), 0);
+  check_error(bytes_sent < 0, "Send error.\n");
+  std::cout << "Sent: " << payload;
 }
 
 void Client::check_messages() {

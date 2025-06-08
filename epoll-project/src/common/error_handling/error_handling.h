@@ -1,5 +1,4 @@
-#ifndef ERROR_H
-#define ERROR_H
+#pragma once
 
 #include "spdlog/spdlog.h"
 #include <stdexcept>
@@ -10,5 +9,3 @@ namespace xtc {
 bool check_error(bool test, std::string error_message,
                  bool raise_exception = true);
 } // namespace xtc
-
-#endif // ERROR_H
