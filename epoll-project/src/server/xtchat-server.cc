@@ -9,7 +9,6 @@
 
 #include <cerrno>
 #include <iostream>
-#include <string_view>
 
 #include "../common/command/command.h"
 
@@ -120,46 +119,61 @@ void Server::handle_new_connection() {
     send_to_user(sock, help_text);
   }
 }
-
 void Server::handle_client_data(int sock) {
   char buffer[kBufferSize];
+
   while (true) {
-    ssize_t bytes_read = recv(sock, buffer, kBufferSize - 1, 0);
-    if (bytes_read == 0) {
+    ssize_t bytes_read = recv(sock, buffer, kBufferSize, 0);
+    if (bytes_read > 0) {
+      client_read_buffers_[sock].append(buffer, bytes_read);
+    } else if (bytes_read == 0) {
+
       purge_user(sock);
       return;
-    }
-    if (bytes_read < 0) {
+    } else {
       if (errno == EAGAIN || errno == EWOULDBLOCK) {
+
         break;
       }
+
       purge_user(sock);
       return;
     }
+  }
 
-    buffer[bytes_read] = '\0';
-    spdlog::info("Received from client fd {}: {}", sock, buffer);
+  std::string& data = client_read_buffers_[sock];
+  size_t pos;
+  while ((pos = data.find('\n')) != std::string::npos) {
+    std::string line = data.substr(0,pos);
+   
+    data.erase(0, pos + 1);
 
-    std::string_view line(buffer, static_cast<size_t>(bytes_read));
+    if (!line.empty() && line.back() == '\r') {
+      line.pop_back();
+    }
 
+    if (line.empty()) {
+      continue;
+    }
+
+    spdlog::info("Processing command line for fd {}: [{}]", sock, std::string(line));
     if (auto cmd = parse_line(line)) {
       handle_command(*cmd, sock);
-      return;
+    } else {
+      spdlog::warn("Line from fd {} not parsed as command: [{}]", sock,
+                   std::string(line));
     }
   }
 }
 
 void Server::handle_command(const Command& cmd, int sock) {
   switch (cmd.cmd) {
-    case command::CommandType::Help: {
+    case command::CommandType::Help:
       send_to_user(sock, help_text);
       break;
-    }
-
     case command::CommandType::Send: {
       const std::string& target = cmd.arg1;
       const std::string& message = cmd.arg2;
-
       if (!socket_from_username_.contains(target)) {
         send_to_user(sock, "No such user @" + target + "\n");
         return;
@@ -168,16 +182,15 @@ void Server::handle_command(const Command& cmd, int sock) {
       send_to_user(target, "@" + from + ": " + message + '\n');
       break;
     }
-    case command::CommandType::SetUsername: {
+    case command::CommandType::SetUsername:
       send_to_user(sock, "Set username not implemented yet\n");
       break;
-    }
   }
 }
 
-void Server::send_to_user(int sock, std ::string payload) {
+void Server::send_to_user(int sock, std::string payload) {
   std::string username = username_from_socket_[sock];
-  send_to_user(username, payload);
+  send_to_user(username, std::move(payload));
 }
 
 void Server::send_to_user(std::string username, std::string payload) {
@@ -188,23 +201,27 @@ void Server::send_to_user(std::string username, std::string payload) {
   SPDLOG_INFO("Sent payload to {}", sock);
 }
 
-void Server::purge_user(std::string username) {
-  int sock = socket_from_username_[username];
-  socket_from_username_.erase(username);
-  username_from_socket_.erase(sock);
-  remove_from_epoll(sock);
-  close(sock);
-  SPDLOG_INFO("Client @{} with fd: {} disconnected", username, sock);
-  return;
-}
-void Server::purge_user(int sock) {
-  std::string username = username_from_socket_[sock];
-  socket_from_username_.erase(username);
-  username_from_socket_.erase(sock);
-  remove_from_epoll(sock);
-  close(sock);
-  SPDLOG_INFO("Client @{} with fd: {} disconnected", username, sock);
-  return;
+void Server::purge_user(const std::string username) {
+  if (socket_from_username_.contains(username)) {
+    int sock = socket_from_username_[username];
+    socket_from_username_.erase(username);
+    username_from_socket_.erase(sock);
+    client_read_buffers_.erase(sock);
+    remove_from_epoll(sock);
+    close(sock);
+    SPDLOG_INFO("Client @{} with fd: {} disconnected", username, sock);
+  }
 }
 
-}  // namespace xtc::server
+void Server::purge_user(int sock) {
+  if (username_from_socket_.contains(sock)) {
+    std::string username = username_from_socket_[sock];
+    socket_from_username_.erase(username);
+    username_from_socket_.erase(sock);
+    client_read_buffers_.erase(sock);
+    remove_from_epoll(sock);
+    close(sock);
+    SPDLOG_INFO("Client @{} with fd: {} disconnected", username, sock);
+  }
+}
+}

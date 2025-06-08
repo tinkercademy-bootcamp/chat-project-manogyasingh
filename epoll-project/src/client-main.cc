@@ -23,11 +23,10 @@ int main() {
 
   while (true) {
     std::getline(std::cin, payload);
-    std::cout << "You entered: " << payload << "\n";
-    ssize_t bytes_sent =
-        send(client.socket_, payload.c_str(), payload.size(), 0);
-    xtc::check_error(bytes_sent < 0, "Send error.\n");
-    client.check_messages();
+    if (std::cin.eof()) {
+      break;
+    }
+    client.send_message(payload);
   }
 
   return 0;

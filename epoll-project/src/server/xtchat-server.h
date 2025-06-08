@@ -28,6 +28,7 @@ class Server {
   // emulate a bidirectional map
   std::unordered_map<int, std::string> username_from_socket_;
   std::unordered_map<std::string, int> socket_from_username_;
+  std::unordered_map<int, std::string> client_read_buffers_;
 
   void opt_bind_listen();
   void add_to_epoll(int sock, uint32_t events);
