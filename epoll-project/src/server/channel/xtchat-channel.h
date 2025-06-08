@@ -27,9 +27,9 @@ class Channel {
       const std::string&
           newOwner);  // should only work if proposed owner is a member
 
-  // helper: map usernames to sockets and return sockets of all current members
-  std::vector<int> getMemberSockets(
-      const std::unordered_map<std::string, int>& socketMap) const;
+  void sendMessageToAll(const std::string& message,
+                        const std::unordered_map<std::string, int>& socketMap);
+  static void send_to_user(int sock, std::string payload);
 
  private:
   std::string name_;
