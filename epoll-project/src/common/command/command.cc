@@ -134,7 +134,6 @@ std::optional<Command> parse_line(std::string_view line) {
     return Command{CommandType::KickOut, std::string{channel.substr(1)},
                    std::string{target.substr(1)}};
   }
-
-  return std::nullopt;
+  return Command{CommandType::MiniHelp, {}, {}};
 }
 }  // namespace xtc::command

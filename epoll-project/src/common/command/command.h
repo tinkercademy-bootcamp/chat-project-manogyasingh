@@ -9,6 +9,7 @@ namespace xtc::command {
 
 enum class CommandType {
   Help,
+  MiniHelp,
   SetUsername,
   Send,
   SendChannel,
@@ -19,7 +20,7 @@ enum class CommandType {
   DeleteChannel,
   ListJoinedChannels,
   ListAllChannels,
-  KickOut
+  KickOut,
 };
 struct Command {
   CommandType cmd;

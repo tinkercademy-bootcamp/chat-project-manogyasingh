@@ -386,6 +386,9 @@ void Server::handle_command(const Command& cmd, int sock) {
       SPDLOG_INFO("User @{} kicked out @{} from channel #{}", username, target_user, channel_name);
       break;
     }
+case command::CommandType::MiniHelp: {
+  send_to_user(sock, "Your last command wasn't parsed properly. Send /help for a list of valid commands and arguments.");
+}
   }
 }
 
