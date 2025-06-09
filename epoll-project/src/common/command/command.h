@@ -19,6 +19,7 @@ enum class CommandType {
   DeleteChannel,
   ListJoinedChannels,
   ListAllChannels,
+  KickOut
 };
 struct Command {
   CommandType cmd;

@@ -37,8 +37,8 @@ std::optional<Command> parse_line(std::string_view line) {
 
   if (thiscommand == "/set_username") {
     const auto name = token(line);
-    if (name.empty()) return std::nullopt;
-    return Command{CommandType::SetUsername, std::string{name}, {}};
+    if (name.size() < 2 || name.front() != '@') return std::nullopt;
+    return Command{CommandType::SetUsername, std::string{name.substr(1)}, {}};
   }
 
   if (thiscommand == "/send") {

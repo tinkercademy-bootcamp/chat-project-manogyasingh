@@ -26,6 +26,7 @@ int main() {
   std::string payload = "";
 
   while (true) {
+    std::cout << " > ";
     std::getline(std::cin, payload);
     if (std::cin.eof()) {
       break;

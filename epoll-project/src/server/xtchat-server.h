@@ -56,18 +56,18 @@ class Server {
   void handle_command(const xtc::command::Command& cmd, int sock);
 
   std::string help_text =
-      "\n=====================================================================\nUsage:\n"
+      "\nUsage:\n"
       "/help                                       - Print this message\n"
-      "/set_username <name>                        - Set your username\n"
+      "/set_username @<name>                       - Set your username\n"
       "/send @<user> <message>                     - Send a private message to "
       "a user\n"
       "/create_channel #<channel>                  - Create a new channel\n"
       "/join_channel #<channel>                    - Join an existing channel\n"
       "/leave_channel #<channel>                   - Leave a channel you are "
       "in\n"
-      "/send_channel #<channel> <message>          - Send a message to a "
+      "/send_channel #<channel> <message>           - Send a message to a "
       "channel\n"
-      "/list_joined_channels                       - List channels you have "
+      "/list_joined_channels                        - List channels you have "
       "joined\n"
       "/list_all_channels                          - List all available "
       "channels on the server\n"

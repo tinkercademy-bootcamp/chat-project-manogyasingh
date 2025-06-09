@@ -244,7 +244,123 @@ void Server::handle_command(const Command& cmd, int sock) {
       }
       break;
     }
-    
+    case command::CommandType::LeaveChannel: {
+      const std::string& channel_name = cmd.arg1;
+      const std::string& username = username_from_socket_[sock];
+
+      if (!channels_.contains(channel_name)) {
+        send_to_user(sock, "Channel #" + channel_name + " does not exist.\n");
+      } else {
+        auto& channel = channels_[channel_name];
+        if (!channel.isMember(username)) {
+          send_to_user(sock, "You are not a member of #" + channel_name + "\n");
+        } else {
+          channel.removeMember(username);
+          send_to_user(sock, "Left channel #" + channel_name + "\n");
+          SPDLOG_INFO("User @{} left channel #{}", username, channel_name);
+          // remove from all channels
+          for (auto it = channels_.begin(); it != channels_.end(); ) {
+            auto& channel = it->second;
+            if (channel.isMember(username)) {
+              channel.removeMember(username);
+              // delete channel if it becomes empty
+              if (channel.getMembers().empty()) {
+                SPDLOG_INFO("Channel #{} deleted as last member @{} left", it->first, username);
+                it = channels_.erase(it);
+                continue;
+              } else if (channel.getOwner() == username) {
+                // make random guy owner
+                const auto& members = channel.getMembers();
+                auto new_owner = *members.begin();
+                channel.transferOwnership(new_owner);
+                SPDLOG_INFO("Ownership of channel #{} transferred from @{} to @{}", it->first, username, new_owner);
+              }
+            }
+            ++it;
+          }
+        }
+      }
+      break;
+    }
+    case command::CommandType::TransferChannelOwnership: {
+      const std::string& channel_name = cmd.arg1;
+      const std::string& new_owner = cmd.arg2;
+      const std::string& current_user = username_from_socket_[sock];
+
+      if (!channels_.contains(channel_name)) {
+        send_to_user(sock, "Channel #" + channel_name + " does not exist.\n");
+        break;
+      }
+      auto& channel = channels_[channel_name];
+      if (channel.getOwner() != current_user) {
+        send_to_user(sock, "You are not the owner of #" + channel_name + "\n");
+        break;
+      }
+      if (!channel.isMember(new_owner)) {
+        send_to_user(sock, "User @" + new_owner + " is not a member of #" + channel_name + "\n");
+        break;
+      }
+      channel.transferOwnership(new_owner);
+      send_to_user(sock, "Ownership of #" + channel_name + " transferred to @" + new_owner + "\n");
+      SPDLOG_INFO("Ownership of channel #{} transferred from @{} to @{}", channel_name, current_user, new_owner);
+      break;
+    }
+    case command::CommandType::DeleteChannel: {
+      const std::string& channel_name = cmd.arg1;
+      const std::string& username = username_from_socket_[sock];
+
+      if (!channels_.contains(channel_name)) {
+        send_to_user(sock, "Channel #" + channel_name + " does not exist.\n");
+      } else {
+        auto& channel = channels_[channel_name];
+        if (channel.getOwner() != username) {
+          send_to_user(sock, "You are not the owner of #" + channel_name + "\n");
+        } else {
+          for (const auto& member : channel.getMembers()) {
+            if (member != username) {
+              send_to_user(member, "Channel #" + channel_name + " has been deleted by the owner.\n");
+            }
+          }
+          channels_.erase(channel_name);
+          send_to_user(sock, "Channel #" + channel_name + " deleted.\n");
+          SPDLOG_INFO("Channel #{} deleted by owner @{}", channel_name, username);
+        }
+      }
+      break;
+    }
+    case command::CommandType::ListAllChannels: {
+      if (channels_.empty()) {
+        send_to_user(sock, "No channels exist.\n");
+      } else {
+        std::string msg = "Channels:\n";
+        for (const auto& [name, channel] : channels_) {
+          msg += "#" + name + " (owner: @" + channel.getOwner() + ", members: " +
+                 std::to_string(channel.getMembers().size()) + ")\n";
+        }
+        send_to_user(sock, msg);
+      }
+      break;
+    }
+    case command::CommandType::ListJoinedChannels: {
+      const std::string& username = username_from_socket_[sock];
+      std::vector<std::string> joined;
+      for (const auto& [name, channel] : channels_) {
+        if (channel.isMember(username)) {
+          joined.push_back(name);
+        }
+      }
+      if (joined.empty()) {
+        send_to_user(sock, "You have not joined any channels.\n");
+      } else {
+        std::string msg = "Joined channels:\n";
+        for (const auto& name : joined) {
+          msg += "#" + name + "\n";
+        }
+        send_to_user(sock, msg);
+      }
+      break;
+    }
+
 
   }
 }

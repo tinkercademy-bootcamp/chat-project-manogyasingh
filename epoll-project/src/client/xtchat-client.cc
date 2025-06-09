@@ -37,23 +37,24 @@ void Client::send_message(std::string payload) {
   ssize_t bytes_sent = send(socket_, payload.c_str(), payload.size(), 0);
   check_error(bytes_sent < 0, "Send error.\n");
   std::cout << "Sent: " << payload;
+  std::cout << "==================================================\n";
 }
 
 bool Client::check_messages() {
   // Receive response from the server
   // very very simple for now, literally just prints everything in the buffer
-  // will add multithreading and some nice formatting later
   const int kBufferSize = 1024;
   char recv_buffer[kBufferSize] = {0};
 
   ssize_t read_size = read(socket_, recv_buffer, kBufferSize);
   check_error(read_size < 0, "Read error.\n");
   if (read_size > 0) {
-    std::cout << "Received: " << recv_buffer << "\n";
+    std::cout << "Received: \n---\n" << recv_buffer << "\n";
   } else if (read_size == 0) {
     std::cout << "Server closed connection.\n";
     return true;
   }
+  std::cout << "==================================================\n";
   return false;
 }
 
