@@ -74,7 +74,8 @@ class Server {
       "/transfer_channel_ownership #<channel> @<user> - Transfer ownership of "
       "a channel\n"
       "/delete_channel #<channel>                  - Delete a channel you "
-      "own\n";
+      "own\n"
+      "/kickout @<user> #<channel>                 - Remove user from channel, but only if you're the channel owner.";
 };
 }  // namespace xtc::server
 

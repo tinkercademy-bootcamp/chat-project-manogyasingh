@@ -360,8 +360,32 @@ void Server::handle_command(const Command& cmd, int sock) {
       }
       break;
     }
+    case command::CommandType::KickOut: {
+      const std::string& channel_name = cmd.arg1;
+      const std::string& target_user = cmd.arg2;
+      const std::string& username = username_from_socket_[sock];
 
-
+      if (!channels_.contains(channel_name)) {
+        send_to_user(sock, "Channel #" + channel_name + " does not exist.\n");
+        break;
+      }
+      auto& channel = channels_[channel_name];
+      if (channel.getOwner() != username) {
+        send_to_user(sock, "You are not the owner of #" + channel_name + "\n");
+        break;
+      }
+      if (!channel.isMember(target_user)) {
+        send_to_user(sock, "User @" + target_user + " is not a member of #" + channel_name + "\n");
+        break;
+      }
+      channel.removeMember(target_user);
+      send_to_user(sock, "User @" + target_user + " has been kicked out of #" + channel_name + "\n");
+      if (socket_from_username_.contains(target_user)) {
+        send_to_user(target_user, "You have been kicked out of #" + channel_name + " by the owner.\n");
+      }
+      SPDLOG_INFO("User @{} kicked out @{} from channel #{}", username, target_user, channel_name);
+      break;
+    }
   }
 }
 

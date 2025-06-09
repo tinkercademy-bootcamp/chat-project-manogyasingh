@@ -123,6 +123,17 @@ std::optional<Command> parse_line(std::string_view line) {
     return Command{
         CommandType::CreateChannel, std::string{channel.substr(1)}, {}};
   }
+  if (thiscommand == "/kickout") {
+    const auto target = token(line);
+    const auto channel = token(line);
+
+    if (target.size() < 2 || target.front() != '@' || channel.size() < 2 ||
+        channel.front() != '#') {
+      return std::nullopt;
+    }
+    return Command{CommandType::KickOut, std::string{channel.substr(1)},
+                   std::string{target.substr(1)}};
+  }
 
   return std::nullopt;
 }
