@@ -56,11 +56,25 @@ class Server {
   void handle_command(const xtc::command::Command& cmd, int sock);
 
   std::string help_text =
-      "Usage:\n"
-      "/help                                 - Print this message\n"
-      "/set_username <namelike_string>       - Set your own username\n"
-      "/send @<target_user> <string>               - Send a message to "
-      "target_user\n";
+      "\n=====================================================================\nUsage:\n"
+      "/help                                       - Print this message\n"
+      "/set_username <name>                        - Set your username\n"
+      "/send @<user> <message>                     - Send a private message to "
+      "a user\n"
+      "/create_channel #<channel>                  - Create a new channel\n"
+      "/join_channel #<channel>                    - Join an existing channel\n"
+      "/leave_channel #<channel>                   - Leave a channel you are "
+      "in\n"
+      "/send_channel #<channel> <message>          - Send a message to a "
+      "channel\n"
+      "/list_joined_channels                       - List channels you have "
+      "joined\n"
+      "/list_all_channels                          - List all available "
+      "channels on the server\n"
+      "/transfer_channel_ownership #<channel> @<user> - Transfer ownership of "
+      "a channel\n"
+      "/delete_channel #<channel>                  - Delete a channel you "
+      "own\n";
 };
 }  // namespace xtc::server
 

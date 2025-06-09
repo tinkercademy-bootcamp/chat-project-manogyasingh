@@ -15,7 +15,7 @@ class Client {
   ~Client();
   int socket_;
   void send_message(std::string payload);
-  void check_messages();
+  bool check_messages();
 
  private:
   static constexpr int kBufferSize = 1024;

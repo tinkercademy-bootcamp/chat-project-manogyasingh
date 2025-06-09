@@ -7,14 +7,26 @@
 
 namespace xtc::command {
 
-enum class CommandType { Help, SetUsername, Send, SendChannel, JoinChannel, LeaveChannel, TransferChannelOwnership, DeleteChannel, ListJoinedChannels, ListAllChannels };
+enum class CommandType {
+  Help,
+  SetUsername,
+  Send,
+  SendChannel,
+  JoinChannel,
+  CreateChannel,
+  LeaveChannel,
+  TransferChannelOwnership,
+  DeleteChannel,
+  ListJoinedChannels,
+  ListAllChannels,
+};
 struct Command {
   CommandType cmd;
   std::string arg1;
   std::string arg2;
 };
 
-std::optional<Command> parse_line (std::string_view line);
+std::optional<Command> parse_line(std::string_view line);
 
 }  // namespace xtc::command
 #endif

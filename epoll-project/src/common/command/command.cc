@@ -1,5 +1,7 @@
 #include "command.h"
 
+#include <spdlog/spdlog.h>
+
 #include <cctype>
 #include <string_view>
 
@@ -49,7 +51,8 @@ std::optional<Command> parse_line(std::string_view line) {
     if (line.empty()) {
       return std::nullopt;
     }
-    return Command{CommandType::Send, std::string{target.substr(1)}, std::string{line}};
+    return Command{CommandType::Send, std::string{target.substr(1)},
+                   std::string{line}};
   }
   if (thiscommand == "/send_channel") {
     const auto channel = token(line);
@@ -61,7 +64,8 @@ std::optional<Command> parse_line(std::string_view line) {
     if (line.empty()) {
       return std::nullopt;
     }
-    return Command{CommandType::SendChannel, std::string{channel.substr(1)}, std::string{line}};
+    return Command{CommandType::SendChannel, std::string{channel.substr(1)},
+                   std::string{line}};
   }
 
   if (thiscommand == "/join_channel") {
@@ -70,7 +74,8 @@ std::optional<Command> parse_line(std::string_view line) {
     if (channel.size() < 2 || channel.front() != '#') {
       return std::nullopt;
     }
-    return Command{CommandType::JoinChannel, std::string{channel.substr(1)}, {}};
+    return Command{
+        CommandType::JoinChannel, std::string{channel.substr(1)}, {}};
   }
   if (thiscommand == "/leave_channel") {
     const auto channel = token(line);
@@ -78,16 +83,20 @@ std::optional<Command> parse_line(std::string_view line) {
     if (channel.size() < 2 || channel.front() != '#') {
       return std::nullopt;
     }
-    return Command{CommandType::LeaveChannel, std::string{channel.substr(1)}, {}};
+    return Command{
+        CommandType::LeaveChannel, std::string{channel.substr(1)}, {}};
   }
   if (thiscommand == "/transfer_channel_ownership") {
     const auto channel = token(line);
     const auto target = token(line);
 
-    if (channel.size() < 2 || channel.front() != '#' || target.size() < 2 || target.front() != '@') {
+    if (channel.size() < 2 || channel.front() != '#' || target.size() < 2 ||
+        target.front() != '@') {
       return std::nullopt;
     }
-    return Command{CommandType::TransferChannelOwnership, std::string{channel.substr(1)}, std::string{target.substr(1)}};
+    return Command{CommandType::TransferChannelOwnership,
+                   std::string{channel.substr(1)},
+                   std::string{target.substr(1)}};
   }
   if (thiscommand == "/delete_channel") {
     const auto channel = token(line);
@@ -95,13 +104,24 @@ std::optional<Command> parse_line(std::string_view line) {
     if (channel.size() < 2 || channel.front() != '#') {
       return std::nullopt;
     }
-    return Command{CommandType::DeleteChannel, std::string{channel.substr(1)}, {}};
+    return Command{
+        CommandType::DeleteChannel, std::string{channel.substr(1)}, {}};
   }
   if (thiscommand == "/list_joined_channels") {
     return Command{CommandType::ListJoinedChannels, {}, {}};
   }
   if (thiscommand == "/list_all_channels") {
     return Command{CommandType::ListAllChannels, {}, {}};
+  }
+  if (thiscommand == "/create_channel") {
+    line = ltrim(line);
+    const auto channel = token(line);
+    spdlog::info("Creating channel: {}", channel);
+    if (channel.size() < 2 || channel.front() != '#') {
+      return std::nullopt;
+    }
+    return Command{
+        CommandType::CreateChannel, std::string{channel.substr(1)}, {}};
   }
 
   return std::nullopt;

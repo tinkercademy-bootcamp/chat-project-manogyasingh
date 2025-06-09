@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -13,7 +14,10 @@ int main() {
   std::thread(
       [](xtc::client::Client &c) {
         while (true) {
-          c.check_messages();
+          bool cease = c.check_messages();
+          if (cease){
+            std::exit(0);
+          }
         }
       },
       std::ref(client))

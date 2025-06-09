@@ -212,6 +212,40 @@ void Server::handle_command(const Command& cmd, int sock) {
       send_to_channel(channel_name, from, message);
       break;
     }
+    case command::CommandType::JoinChannel: {
+      const std::string& channel_name = cmd.arg1;
+      const std::string& username = username_from_socket_[sock];
+
+      if (!channels_.contains(channel_name)) {
+        send_to_user(sock, "Channel #" + channel_name + " does not exist. Try creating it maybe.\n");
+      } else {
+        auto& channel = channels_[channel_name];
+        if (channel.isMember(username)) {
+          send_to_user(sock, "You are already a member of #" + channel_name + "\n");
+        } else {
+          channel.addMember(username);
+          send_to_user(sock, "Joined channel #" + channel_name + "\n");
+          SPDLOG_INFO("User @{} joined channel #{}", username, channel_name);
+        }
+      }
+      break;
+    }
+    case command::CommandType::CreateChannel: {
+      const std::string& channel_name = cmd.arg1;
+      const std::string& username = username_from_socket_[sock];
+
+      if (channels_.contains(channel_name)) {
+      send_to_user(sock, "Channel #" + channel_name + " already exists.\n");
+      } else {
+      channels_[channel_name].addMember(username);
+      channels_[channel_name].transferOwnership(username);
+      send_to_user(sock, "Channel #" + channel_name + " created and joined.\n");
+      SPDLOG_INFO("User @{} created channel #{}", username, channel_name);
+      }
+      break;
+    }
+    
+
   }
 }
 

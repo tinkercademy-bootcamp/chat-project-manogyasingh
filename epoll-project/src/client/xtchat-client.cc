@@ -39,7 +39,7 @@ void Client::send_message(std::string payload) {
   std::cout << "Sent: " << payload;
 }
 
-void Client::check_messages() {
+bool Client::check_messages() {
   // Receive response from the server
   // very very simple for now, literally just prints everything in the buffer
   // will add multithreading and some nice formatting later
@@ -52,7 +52,9 @@ void Client::check_messages() {
     std::cout << "Received: " << recv_buffer << "\n";
   } else if (read_size == 0) {
     std::cout << "Server closed connection.\n";
+    return true;
   }
+  return false;
 }
 
 }  // namespace xtc::client

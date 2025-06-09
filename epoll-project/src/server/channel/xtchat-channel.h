@@ -10,6 +10,7 @@ namespace xtc::server {
 
 class Channel {
  public:
+  Channel() = default;                                        //
   Channel(std::string name, std::string owner);               //
   bool addMember(const std::string& username);                //
   bool removeMember(const std::string& username);             //
@@ -18,7 +19,6 @@ class Channel {
   const std::unordered_set<std::string>& getMembers() const;  //
   const std::string& getName() const;                         //
   const std::string& getOwner() const;                        //
-  
 
  private:
   std::string name_;
