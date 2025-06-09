@@ -9,8 +9,18 @@
 - https://github.com/joakimthun/io-uring-echo-server
 - https://man7.org/linux/man-pages/man7/epoll.7.html
 - What other resources can you find about epoll?
+  - https://linux.die.net/man/4/epoll : The epoll(4) man page. Turns out this isn't relevant as this is supposed to refer to the device files (in `/dev/`) but epoll doesn't use them. 
+  - https://en.wikipedia.org/wiki/Epoll wiki page
+  - found this tutorial that may be helpful: https://embetronicx.com/tutorials/linux/device-drivers/epoll-in-linux-device-driver/
+  - found one more : https://web.archive.org/web/20120504033548/https://banu.com/blog/2/how-to-use-epoll-a-complete-example-in-c/
+
 - Are the above code repos examples of good code or bad code?
+  - looks okay
+  - the first repo has a lot of stars so it's probably going to be good
 - How do you decide what is good code or bad code?
+  - if a codebase is easy to read, explain and extend then its good
+  - usually you can look at metrics like stars on github repo to get an idea
+
 
 ## Creating a Chat Client/Server Using EPOLL
 
@@ -45,4 +55,13 @@
   the source code and build it
 - What are the tradeoffs between using a library from `usr/lib` vs git cloning
   the source and using that instead?
+
+  |/usr/lib/|git clone|
+  |-|-|
+  |Easier to manage (can use system package managers for it)|Will have to use `git pull` and then rebuild|
+  |limited to the version availabe in your pm's repo (you could theoretically add new sources or just install it there yourself but that effort is a tradeoff in itself)|bleeding edge all the time|
+  |you'll need root privileges|works without root|
+  |integrates with your whole system|integrates only with your project|
 - What is the difference between `-l` and `-L` when linking using `g++`?
+  - `-L` specifies the directory to look in
+  - `-l` specifies the library to look for
