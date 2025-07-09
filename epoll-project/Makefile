@@ -4,7 +4,7 @@
 CXX := g++
 
 # define the C/C++ compiler flags
-CXXFLAGS :=-std=c++23 -Wall -Wextra -pedantic -fsanitize=address
+CXXFLAGS :=-std=c++20 -Wall -Wextra -pedantic -fsanitize=address
 
 CXX_DEBUG_FLAGS :=-g3 -ggdb3
 CXX_RELEASE_FLAGS :=-O3
@@ -12,7 +12,11 @@ CXX_RELEASE_FLAGS :=-O3
 CXXFLAGS += $(CXX_DEBUG_FLAGS)
 
 # The linker flags. These are passed to the linker when we link our object files together.
-LDFLAGS := -fsanitize=address -lspdlog -lfmt
+LDFLAGS := -fsanitize=address
+
+LIBS:= fmt spdlog
+LIB_FLAGS := $(addprefix -l,$(LIBS))
+LDFLAGS += $(LIB_FLAGS)
 
 BUILD_DIR := build
 SRC_DIR := src
